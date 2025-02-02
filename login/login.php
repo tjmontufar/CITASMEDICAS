@@ -21,9 +21,9 @@
             <input placeholder="contraseña" type="password" name="password">
         </label>
         <a href="#" class="link">¿Olvidó su contraseña?</a>
-
-        <button id="session">Iniciar sesión</button>
-        <br><button id="register">Registrarse</button></br>
+        <br><button>Iniciar sesión</button></br>
+        <a href="registrarse.php" class="link">¿No tienes cuenta? Regístrate aquí</a>
+        <a href="../principal/" class="link">Volver a inicio</a>
     </form>
 </body>
 </html>

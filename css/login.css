@@ -31,7 +31,8 @@ form {
     background: #fff;
     text-align: center;
     padding: 20px 25px;
-    box-shadow: 0 5px 10px #252525;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
 }
 
 form .title {
@@ -64,10 +65,16 @@ form label input::placeholder {
     color: rgba(37, 37, 37, 0.5);
 }
 
-
 form .link {
+    display: block;
+    text-align: center;
+    margin-top: 15px;
     color: #252525;
-    margin-bottom: 15px;
+    text-decoration: none;
+}
+
+form .link:hover {
+    text-decoration: underline;
 }
 
 form button {
