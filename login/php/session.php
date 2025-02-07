@@ -1,17 +1,16 @@
 <?php 
     include '../../conexion.php';
-
+    session_start();
     $usuario = $_POST['usuario'];
     $password = $_POST['password'];
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        $consulta = "SELECT 1 FROM Usuarios WHERE nombre = ? AND contrasenia = ?";
-        $stmt = $conn->prepare($consulta);
-        $stmt->execute([$usuario, $password]);
-        $user = $stmt->fetch();
-
-        session_start();
-        if ($user) {
+        $consulta = "SELECT * FROM Usuarios WHERE usuario = ? AND contrasenia = ?";
+        $statement = $conn->prepare($consulta);
+        $statement->execute([$usuario, $password]);
+        $resultset = $statement->fetch();
+        
+        if ($resultset) {
             $_SESSION['usuario'] = $usuario;
             header('Location: ../../admin/index.php');
         } else {
