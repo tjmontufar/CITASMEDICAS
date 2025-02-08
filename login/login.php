@@ -14,11 +14,11 @@
         <br><img src="../img/logo-medicitas.png" alt="logo" class="imagen"></br>
         <label>
             <i class="fa-solid fa-user"></i>
-            <input placeholder="usuario" type="text" name="usuario">
+            <input placeholder="usuario" type="text" name="usuario" autocomplete="off">
         </label>
         <label>
             <i class="fa-solid fa-lock"></i>
-            <input placeholder="contraseña" type="password" name="password">
+            <input placeholder="contraseña" type="password" name="password" autocomplete="off">
         </label>
         <a href="#" class="link">¿Olvidó su contraseña?</a>
         <br><button>Iniciar sesión</button></br>

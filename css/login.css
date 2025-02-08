@@ -83,7 +83,12 @@ form button {
     background: #16a8e2;
     padding: 10px 15px;
     cursor: pointer;
+    border-radius: 4px;
     font-size: 20px;
+}
+
+form button:hover {
+    background-color: #0d81c1;
 }
 
 @media (max-width: 500px) {
