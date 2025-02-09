@@ -87,7 +87,7 @@
             <select id="sexo" name="sexo">
                 <option value="" <?= empty($_SESSION['form_data']['tipoUsuario']) ? 'selected' : '' ?>>Seleccionar</option>
                 <option value="Masculino" <?= (isset($_SESSION['form_data']['sexo']) && $_SESSION['form_data']['sexo'] == 'Masculino') ? 'selected' : '' ?>>Masculino</option>
-                <option value="Femeinino" <?= (isset($_SESSION['form_data']['sexo']) && $_SESSION['form_data']['sexo'] == 'Femenino') ? 'selected' : '' ?>>Femenino</option>
+                <option value="Femenino" <?= (isset($_SESSION['form_data']['sexo']) && $_SESSION['form_data']['sexo'] == 'Femenino') ? 'selected' : '' ?>>Femenino</option>
             </select>
 
             <label for="telefono">Teléfono</label>
