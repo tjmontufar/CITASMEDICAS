@@ -10,20 +10,7 @@
     <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </head>
 <body>
-<nav>
-         <div class="logo">
-            MediCitas
-         </div>
-         <input type="checkbox" id="click">
-         <label for="click" class="menu-btn">
-         <i class="fas fa-bars"></i>
-         </label>
-         <ul class="menu">
-         <ul>
-            <li><a class="active" href="../medicos/header.php">Salir</a></li>
-         </ul>
-      </nav>
-
+    <?php include 'header.php'; ?>
     <main>
         <div class="table-container">
             <h2>Tabla de Citas Médicas</h2>

@@ -11,7 +11,7 @@
 </head>
 <body>
     <div>
-        Hola, <?php echo $_SESSION['usuario']; unset($_SESSION['usuario']); ?>    
+        Hola, <?php echo $_SESSION['usuario']['nombre'] . " " . $_SESSION['usuario']['apellido']; unset($_SESSION['usuario']); ?>    
     </div>
 </body>
 </html>
