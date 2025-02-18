@@ -25,11 +25,8 @@ session_start();
             <i class="fas fa-bars"></i>
         </label>
         <ul class="menu">
-            <li class="btn"><?php echo $_SESSION['usuario']['nombre'] . " " . $_SESSION['usuario']['apellido']; ?></li>
-        </ul>
-
-        <ul>
-            <li><a class="" href="../principal/index.php" onclick="">Salir</a></li>
+            <li class="btn"><?php echo "Hola, " . $_SESSION['usuario']['nombre'] . " " . $_SESSION['usuario']['apellido']; ?></li>
+            <li><a class="" href="../principal/index.php">Salir</a></li>
         </ul>
     </nav>
 
