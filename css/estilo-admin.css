@@ -27,6 +27,15 @@ body {
   z-index: 1000;
 }
 
+.menu-toggle {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: white;
+  cursor: pointer;
+}
+
 .barra-superior .logo {
   font-size: 35px;
   font-weight: bold;
@@ -65,6 +74,7 @@ body {
   top: 60px;
   left: 0;
   padding-top: 20px;
+  transition: transform 0.3s ease-in-out;
 }
 
 .menu-lateral ul {
@@ -96,10 +106,16 @@ body {
 }
 
 @media (max-width: 900px) {
+  .menu-toggle {
+    display: block;
+  }
+
   .menu-lateral {
-    width: 100%;
-    height: auto;
-    position: relative;
+    transform: translateX(-100%);
+  }
+
+  .menu-lateral.activo {
+    transform: translateX(0);
   }
 
   .contenedor {
@@ -108,5 +124,10 @@ body {
 
   .contenido {
     margin-left: 0;
+  }
+
+  .barra-superior .logo {
+    font-size: 15px;
+    font-weight: bold;
   }
 }
