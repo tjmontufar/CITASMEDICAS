@@ -26,7 +26,7 @@ session_start();
         </label>
         <ul class="menu">
             <li class="btn"><?php echo "(DOCTOR) " . $_SESSION['usuario']['nombre'] . " " . $_SESSION['usuario']['apellido']; ?></li>
-            <li><a class="" href="../principal/index.php">Salir</a></li>
+            <li><a href="../principal/index.php">Salir</a></li>
         </ul>
     </nav>
 
