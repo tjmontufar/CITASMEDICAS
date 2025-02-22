@@ -1,5 +1,5 @@
 <?php
-session_start();
+include 'session-control.php';
 ?>
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
@@ -22,7 +22,7 @@ session_start();
         <div class="logo">MediCitas</div>
         <div class="usuario">
             <span><?php echo "(ADMIN) " . $_SESSION['usuario']['nombre'] . " " . $_SESSION['usuario']['apellido']; ?></span>
-            <a href="../principal/index.php" class="btn-salir">Salir</a>
+            <a href="../cerrar-sesion.php" class="btn-salir">Salir</a>
         </div>
     </header>
 </body>

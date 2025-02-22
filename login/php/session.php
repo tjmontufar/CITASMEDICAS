@@ -23,7 +23,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $_SESSION['usuario'] = [
                     'usuario' => $usuario,
                     'nombre' => $resultset['nombre'],
-                    'apellido' => $resultset['apellido']
+                    'apellido' => $resultset['apellido'],
+                    'rol' => $resultset['rol'],
+                    'idusuario' => $resultset['idUsuario']
                 ];
 
                 if($resultset['rol'] == 'Administrador') {
