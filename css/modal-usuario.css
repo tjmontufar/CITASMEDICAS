@@ -9,7 +9,7 @@
 }
 
 /* Modal */
-.modal {
+.modalEditarUsuario, .modalAgregarUsuario {
     display: none; /* Oculto por defecto */
     position: fixed;
     z-index: 1000;
@@ -29,6 +29,10 @@
     width: 40%;
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
     position: relative;
+}
+
+.edit {
+    display: none;
 }
 
 /* Botón de cerrar */
