@@ -44,7 +44,8 @@ form .title {
     margin-bottom: 5px;
 }
 
-.form-group input, .form-doctor input, .form-paciente input {
+.form-group input, .form-doctor input, .form-paciente input,
+.form-group select, .form-doctor select, .form-paciente select {
     width: 100%;
     padding: 8px;
     font-size: 16px;

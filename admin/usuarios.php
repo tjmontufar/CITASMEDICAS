@@ -1,5 +1,6 @@
 <?php
 include '../conexion.php';
+$paginaActual = 'usuarios';
 $dni_filter = $_GET['dni'] ?? '';
 $nombre_apellido_filter = $_GET['nombre_apellido'] ?? '';
 $rol_filter = $_GET['rol'] ?? '';
@@ -32,7 +33,6 @@ try {
     <title>Document</title>
     <link rel="stylesheet" href="../css/tabla.css">
     <link rel="stylesheet" href="../css/filter.css">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body>
@@ -42,6 +42,7 @@ try {
         <main class="contenido">
             <?php include 'modals/editar-usuario.php'; ?>
             <?php include 'modals/agregar-usuario.php'; ?>
+            <?php include 'alert.php'; ?>
             <div class="filter-container">
                 <form method="GET" action="">
                     <input type="text" name="dni" placeholder="Buscar por DNI" value="<?= $dni_filter ?>" autocomplete="off">
@@ -89,7 +90,7 @@ try {
                                 <td>
                                     <a href='#' class='edit-btn' 
                                         data-idusuario='{$fila['idusuario']}'
-                                        data-dni='{$fila['dni']}' edit-
+                                        data-dni='{$fila['dni']}'
                                         data-nombre='{$fila['nombre']}' 
                                         data-apellido='{$fila['apellido']}' 
                                         data-usuario='{$fila['usuario']}' 
@@ -193,30 +194,4 @@ try {
         });
     </script>
 </body>
-<?php
-if (isset($_SESSION['error'])) {
-    echo '<script>
-                document.addEventListener("DOMContentLoaded", function() {
-                    Swal.fire({
-                        title: "Error",
-                        text: "' . $_SESSION['error'] . '",
-                        icon: "error"
-                    });
-                });
-            </script>';
-    unset($_SESSION['error']);
-} else if (isset($_SESSION['success'])) {
-    echo '<script>
-                document.addEventListener("DOMContentLoaded", function() {
-                    Swal.fire({
-                        title: "Éxito",
-                        text: "' . $_SESSION['success'] . '",
-                        icon: "success"
-                    });
-                });
-            </script>';
-    unset($_SESSION['success']);
-}
-?>
-
 </html>
