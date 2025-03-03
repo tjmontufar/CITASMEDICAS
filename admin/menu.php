@@ -6,7 +6,7 @@
         <li><a href="pacientes.php">Pacientes</a></li>
         <li><a href="#">Especialidades</a></li>
         <li><a href="#">Horarios</a></li>
-        <li><a href="#">Citas</a></li>
+        <li><a href="ListadeCitas.php">Citas</a></li>
         <li><a href="#">Financiamientos</a></li>
     </ul>
 </aside>
