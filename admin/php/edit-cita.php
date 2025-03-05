@@ -5,7 +5,9 @@ session_start();
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $idCita = $_POST['idCita'];
     $idPaciente = $_POST['idPaciente'];
+    $paciente = $_POST['paciente'];
     $idMedico = $_POST['idMedico'];
+    $medico = $_POST['medico'];
     $fecha = $_POST['fecha'];
     $hora = $_POST['hora'];
     $motivo = $_POST['motivo'];
@@ -13,6 +15,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if (empty($idPaciente) || empty($idMedico) || empty($fecha) || empty($hora) || empty($motivo) || empty($estado)) {
         $_SESSION['error'] = "Complete los campos obligatorios.";
+        header('Location: ../ListadeCitas.php');
+        exit();
+    }
+
+    if($paciente == "No encontrado" || $medico == "No encontrado") {
+        $_SESSION['error'] = "Paciente o Médico no encontrado.";
         header('Location: ../ListadeCitas.php');
         exit();
     }
@@ -41,7 +49,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         ]);
 
         if ($statement->rowCount() > 0) {
-            //$consulta = "UPDATE Usuarios SET nombre = :nombre, apellido = :apellido WHERE idUsuario = :idUsuario";
             $_SESSION['success'] = "Cita Nº {$idCita} actualizada correctamente.";
             header('Location: ../ListadeCitas.php');
             exit();

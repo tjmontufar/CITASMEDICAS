@@ -8,17 +8,23 @@
                 <label for="edit-idCita">ID Cita</label>
                 <input id="edit-idCita" type="text" name="idCita" autocomplete="off" readonly>
 
-                <label for="edit-idpaciente">ID Paciente</label>
-                <input id="edit-idpaciente" type="text" name="idPaciente" autocomplete="off">
+                <label for="edit-dnipaciente">DNI Paciente</label>
+                <input id="edit-dnipaciente" type="text" name="dnipaciente" autocomplete="off">
 
-                <label for="edit-nombrePaciente">Paciente</label>
-                <input id="edit-nombrePaciente" type="text" name="nombrePaciente" autocomplete="off">
+                <label for="edit-idpaciente" hidden>ID Paciente</label>
+                <input id="edit-idpaciente" type="text" name="idPaciente" autocomplete="off" readonly hidden>
 
-                <label for="edit-idmedico">ID Medico</label>
-                <input id="edit-idmedico" type="text" name="idMedico" autocomplete="off">
+                <label for="edit-paciente">Paciente</label>
+                <input id="edit-paciente" type="text" name="paciente" autocomplete="off" readonly>
 
-                <label for="edit-nombreMedico">Médico</label>
-                <input id="edit-nombreMedico" type="text" name="nombreMedico" autocomplete="off">
+                <label for="edit-dnimedico">DNI Médico</label>
+                <input id="edit-dnimedico" type="text" name="dnimedico" autocomplete="off">
+
+                <label for="edit-idmedico" hidden>ID Medico</label>
+                <input id="edit-idmedico" type="text" name="idMedico" autocomplete="off" readonly hidden>
+
+                <label for="edit-medico">Médico</label>
+                <input id="edit-medico" type="text" name="medico" autocomplete="off" readonly>
 
                 <label for="edit-fecha">Fecha</label>
                 <input id="edit-fecha" type="date" name="fecha" autocomplete="off">
@@ -40,3 +46,46 @@
         </form>
     </div>
 </div>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById("edit-dnipaciente").addEventListener("input", function () {
+        let dni = this.value.trim();
+        if (dni.length > 0) {
+            fetch("php/buscar-paciente.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: "query=" + encodeURIComponent(dni),
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("edit-paciente").value = data.nombre || "No encontrado";
+                document.getElementById("edit-idpaciente").value = data.idPaciente || "No encontrado";
+            })
+            .catch(error => console.error("Error:", error));
+        } else {
+            document.getElementById("edit-paciente").value = "";
+            document.getElementById("edit-idpaciente").value = "";
+        }
+    });
+
+    document.getElementById("edit-dnimedico").addEventListener("input", function () {
+        let dni = this.value.trim();
+        if (dni.length > 0) {
+            fetch("php/buscar-medico.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: "query=" + encodeURIComponent(dni),
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("edit-medico").value = data.nombre || "No encontrado";
+                document.getElementById("edit-idmedico").value = data.idMedico || "No encontrado";
+            })
+            .catch(error => console.error("Error:", error));
+        } else {
+            document.getElementById("edit-medico").value = "";
+            document.getElementById("edit-idmedico").value = "";
+        }
+    });
+});
+</script>

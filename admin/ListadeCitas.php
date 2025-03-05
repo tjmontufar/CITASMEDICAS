@@ -15,8 +15,10 @@ $hora_filter = $_GET['hora'] ?? '';
 $motivo_filter = $_GET['motivo'] ?? '';
 $estado_filter = $_GET['estado'] ?? '';
 
-$sql = "SELECT Citas.idCita, 
+$sql = "SELECT Citas.idCita,
+       U1.dni AS dnipaciente, 
        Citas.idPaciente, U1.nombre + ' ' + U1.apellido AS paciente, 
+       U2.dni AS dnimedico,
        Citas.idMedico, U2.nombre + ' ' + U2.apellido AS medico, 
        Citas.fecha, 
        CONVERT(VARCHAR, Citas.hora, 108) AS hora,
@@ -160,7 +162,7 @@ if (isset($_GET['export_word'])) {
     .btn-excel,
     .btn-word {
         display: inline-block;
-        background-color: #154ce4;
+        background-color: #0b5471;
         color: white;
         margin-right: 10px;
         margin-bottom: 10px;
@@ -174,7 +176,7 @@ if (isset($_GET['export_word'])) {
     .btn-pdf:hover,
     .btn-excel:hover,
     .btn-word:hover {
-        background-color: #9bbdf0;
+        background-color: rgb(10, 60, 80);
     }
 
     @media (max-width: 768px) {
@@ -266,8 +268,10 @@ if (isset($_GET['export_word'])) {
                                             <a href='#' class='edit-btn'
                                                 data-idcita='{$fila['idCita']}'
                                                 data-idpaciente='{$fila['idPaciente']}'
+                                                data-dnipaciente='{$fila['dnipaciente']}'
                                                 data-paciente='{$fila['paciente']}'
                                                 data-idmedico='{$fila['idMedico']}'
+                                                data-dnimedico='{$fila['dnimedico']}'
                                                 data-medico='{$fila['medico']}'
                                                 data-fecha='{$fila['fecha']}'
                                                 data-hora='{$fila['hora']}'
@@ -309,9 +313,11 @@ if (isset($_GET['export_word'])) {
                 event.preventDefault();
                 document.getElementById("edit-idCita").value = this.dataset.idcita;
                 document.getElementById("edit-idpaciente").value = this.dataset.idpaciente;
-                document.getElementById("edit-nombrePaciente").value = this.dataset.paciente;
+                document.getElementById("edit-dnipaciente").value = this.dataset.dnipaciente;
+                document.getElementById("edit-paciente").value = this.dataset.paciente;
                 document.getElementById("edit-idmedico").value = this.dataset.idmedico;
-                document.getElementById("edit-nombreMedico").value = this.dataset.medico;
+                document.getElementById("edit-dnimedico").value = this.dataset.dnimedico;
+                document.getElementById("edit-medico").value = this.dataset.medico;
                 document.getElementById("edit-fecha").value = this.dataset.fecha;
                 document.getElementById("edit-hora").value = this.dataset.hora;
                 document.getElementById("edit-motivo").value = this.dataset.motivo;
