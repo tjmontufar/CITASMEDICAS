@@ -9,7 +9,7 @@
 }
 
 /* Modal */
-.modalEditarUsuario, .modalAgregarUsuario, .modalEditarMedico, .modalEditarPaciente {
+.modalEditarUsuario, .modalAgregarUsuario, .modalEditarMedico, .modalEditarPaciente, .modalAgregarEspecialidad, .modalEditarEspecialidad {
     display: none; /* Oculto por defecto */
     position: fixed;
     z-index: 1000;
@@ -72,6 +72,15 @@ form .title {
 
 .form-group input, .form-doctor input, .form-paciente input, 
 .form-group select, .form-doctor select, .form-paciente select {
+    width: 100%;
+    padding: 8px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    outline: none;
+}
+
+.form-group textarea {
     width: 100%;
     padding: 8px;
     font-size: 16px;
