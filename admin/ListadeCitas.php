@@ -43,9 +43,6 @@ if ($fecha_filter) {
 if ($hora_filter) {
     $sql .= " AND Citas.hora = '$hora_filter'";
 }
-if ($motivo_filter) {
-    $sql .= " AND Citas.hora = '$motivo_filter'";
-}
 if ($estado_filter) {
     $sql .= " AND Citas.estado = '$estado_filter'";
 }
@@ -56,6 +53,11 @@ try {
     $citas = $query->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
     die("Error al ejecutar la consulta: " . $e->getMessage());
+}
+
+if (isset($_GET['ajax'])) {
+    echo json_encode($citas);
+    exit;
 }
 
 if (isset($_GET['export_pdf'])) {
@@ -215,10 +217,9 @@ if (isset($_GET['export_word'])) {
 
             <div class="filter-container">
                 <form method="GET" action="">
-                    <input type="text" name="paciente" placeholder="Buscar por Paciente" value="<?= $paciente_filter ?>" autocomplete="off">
-                    <input type="text" name="medico" placeholder="Buscar por Médico" value="<?= $medico_filter ?>" autocomplete="off">
-                    <input type="date" name="fecha" value="<?= $fecha_filter ?>">
-                    <button type="submit">Filtrar</button>
+                    <input type="text" id="searchPaciente" name="paciente" placeholder="Buscar por Paciente" value="<?= $paciente_filter ?>" autocomplete="off">
+                    <input type="text" id="searchMedico" name="medico" placeholder="Buscar por Médico" value="<?= $medico_filter ?>" autocomplete="off">
+                    <input type="date" id="searchFecha" name="fecha" value="<?= $fecha_filter ?>">
                 </form>
             </div>
 
@@ -244,7 +245,7 @@ if (isset($_GET['export_word'])) {
                                 <th>Acción</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="citasTable">
                             <?php
                             $estadoClases = [
                                 'Confirmada' => 'confirmed',
@@ -293,20 +294,82 @@ if (isset($_GET['export_word'])) {
             </div>
         </main>
     </div>
+</body>
+<script>
+    // --------------------------------- Script para filtrar en tiempo real y actualizar la tabla dinamicamente ---------------------------------
+    document.addEventListener("DOMContentLoaded", function() {
+        const searchPaciente = document.getElementById("searchPaciente");
+        const searchMedico = document.getElementById("searchMedico");
+        const searchFecha = document.getElementById("searchFecha");
+        const citasTable = document.getElementById("citasTable");
 
-    <script>
-        const modals = document.querySelectorAll(".modalAgregarCita, .modalEditarCita");
-        const closeButtons = document.querySelectorAll(".close");
-        const editButtons = document.querySelectorAll(".edit-btn");
-        const addButtons = document.querySelectorAll(".add-btn");
-        const deleteButtons = document.querySelectorAll(".delete-btn");
+        window.fetchCitas = function() {
+            const paciente = searchPaciente.value.trim();
+            const medico = searchMedico.value.trim();
+            const fecha = searchFecha.value.trim();
 
-        addButtons.forEach(btn => {
-            btn.addEventListener("click", function(event) {
-                event.preventDefault();
-                modalAgregarCita.style.display = "block";
+            const params = new URLSearchParams({
+                paciente,
+                medico,
+                fecha,
+                ajax: 1
             });
-        });
+
+            fetch(`ListadeCitas.php?${params}`)
+                .then(response => response.json())
+                .then(data => {
+                    citasTable.innerHTML = "";
+                    if (data.length > 0) {
+                        data.forEach(citas => {
+                            const row = `
+                    <tr>
+                        <td>${citas.idCita}</td>
+                        <td>${citas.paciente}</td>
+                        <td>${citas.medico}</td>
+                        <td>${citas.fecha}</td>
+                        <td>${citas.hora}</td>
+                        <td>${citas.motivo}</td>
+                        <td class="${citas.estado}">${citas.estado}</td>
+                        <td>
+                            <a href="#" class="edit-btn" 
+                                data-idcita="${citas.idCita}"
+                                data-idpaciente="${citas.idPaciente}"
+                                data-dnipaciente="${citas.dnipaciente}"
+                                data-paciente="${citas.paciente}"
+                                data-idmedico="${citas.idMedico}"
+                                data-dnimedico="${citas.dnimedico}"
+                                data-medico="${citas.medico}"
+                                data-fecha="${citas.fecha}"
+                                data-hora="${citas.hora}"
+                                data-motivo="${citas.motivo}"
+                                data-estado="${citas.estado}">
+                                <img src="../img/edit.png" width="35" height="35"></a>
+                            <a href="#" class="delete-btn" data-idcita="${citas.idCita}">
+                                <img src="../img/delete.png" width="35" height="35">
+                            </a>
+                        </td>
+                    </tr>
+                `;
+                            citasTable.innerHTML += row;
+                        });
+                    } else {
+                        citasTable.innerHTML = "<tr><td colspan='8'>No hay usuarios registrados</td></tr>";
+                    }
+
+                    // Vuelve a asignar eventos a los botones después de actualizar la tabla
+                    asignarEventosBotones();
+                })
+                .catch(error => console.error("Error en la búsqueda:", error));
+        }
+        // Eventos para filtrar en tiempo real
+        searchPaciente.addEventListener("keyup", fetchCitas);
+        searchMedico.addEventListener("keyup", fetchCitas);
+        searchFecha.addEventListener("change", fetchCitas);
+    });
+    // --------------------------------- Funcion para asignar eventos a los botones de editar y eliminar ---------------------------------
+    function asignarEventosBotones() {
+        const editButtons = document.querySelectorAll(".edit-btn");
+        const deleteButtons = document.querySelectorAll(".delete-btn");
 
         editButtons.forEach(btn => {
             btn.addEventListener("click", function(event) {
@@ -326,20 +389,6 @@ if (isset($_GET['export_word'])) {
                 modalEditarCita.style.display = "block";
             });
         });
-
-        closeButtons.forEach(button => {
-            button.addEventListener("click", function() {
-                modals.forEach(modal => modal.style.display = "none");
-            });
-        });
-
-        window.onclick = function(event) {
-            modals.forEach(modal => {
-                if (event.target == modal) {
-                    modal.style.display = "none";
-                }
-            });
-        };
 
         deleteButtons.forEach(btn => {
             btn.addEventListener("click", async event => {
@@ -381,32 +430,34 @@ if (isset($_GET['export_word'])) {
                 }
             });
         });
-    </script>
-</body>
-<?php
-if (isset($_SESSION['error'])) {
-    echo '<script>
-                document.addEventListener("DOMContentLoaded", function() {
-                    Swal.fire({
-                        title: "Error",
-                        text: "' . $_SESSION['error'] . '",
-                        icon: "error"
-                    });
-                });
-            </script>';
-    unset($_SESSION['error']);
-} else if (isset($_SESSION['success'])) {
-    echo '<script>
-                document.addEventListener("DOMContentLoaded", function() {
-                    Swal.fire({
-                        title: "Éxito",
-                        text: "' . $_SESSION['success'] . '",
-                        icon: "success"
-                    });
-                });
-            </script>';
-    unset($_SESSION['success']);
-}
-?>
+    }
+    // --------------------------------- Metodos para abrir y cerrar modales ---------------------------------
+    const modals = document.querySelectorAll(".modalAgregarCita, .modalEditarCita");
+    const closeButtons = document.querySelectorAll(".close");
+    const addButtons = document.querySelectorAll(".add-btn");
+
+    addButtons.forEach(btn => {
+        btn.addEventListener("click", function(event) {
+            event.preventDefault();
+            modalAgregarCita.style.display = "block";
+        });
+    });
+
+    closeButtons.forEach(button => {
+        button.addEventListener("click", function() {
+            modals.forEach(modal => modal.style.display = "none");
+        });
+    });
+
+    asignarEventosBotones();
+
+    window.onclick = function(event) {
+        modals.forEach(modal => {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        });
+    };
+</script>
 
 </html>

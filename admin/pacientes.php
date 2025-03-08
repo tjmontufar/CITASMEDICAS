@@ -27,6 +27,12 @@ try {
 } catch (PDOException $e) {
     die("Error al ejecutar la consulta: " . $e->getMessage());
 }
+
+if (isset($_GET['ajax'])) {
+    header('Content-Type: application/json');
+    echo json_encode($pacientes);
+    exit;
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -49,14 +55,13 @@ try {
             <?php include 'alert.php'; ?>
             <div class="filter-container">
                 <form method="GET" action="">
-                    <input type="text" name="dni" placeholder="Buscar por DNI" value="<?= $dni_filter ?>" autocomplete="off">
-                    <input type="text" name="nombre_apellido" placeholder="Buscar por Nombre/Apellido" value="<?= $nombre_apellido_filter ?>" autocomplete="off">
-                    <select name="sexo">
+                    <input type="text" id="searchDNI" name="dni" placeholder="Buscar por DNI" value="<?= $dni_filter ?>" autocomplete="off">
+                    <input type="text" id="searchNombre" name="nombre_apellido" placeholder="Buscar por Nombre/Apellido" value="<?= $nombre_apellido_filter ?>" autocomplete="off">
+                    <select name="sexo" id="searchSexo">
                         <option value="">Sexo</option>
                         <option value="Masculino" <?= $sexo_filter == 'Masculino' ? 'selected' : '' ?>>Masculino</option>
                         <option value="Femenino" <?= $sexo_filter == 'Femenino' ? 'selected' : '' ?>>Femenino</option>
                     </select>
-                    <button type="submit">Filtrar</button>
                 </form>
             </div>
             <div class="table-container">
@@ -79,7 +84,7 @@ try {
                                 <th>ACCION</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="pacientesTable">
                             <?php
                             if (count($pacientes) > 0) {
                                 foreach ($pacientes as $fila) {
@@ -119,19 +124,81 @@ try {
 
         </main>
     </div>
-    <script>
-        const modals = document.querySelectorAll(".modalAgregarUsuario, .modalEditarPaciente");
-        const closeButtons = document.querySelectorAll(".close");
-        const editButtons = document.querySelectorAll(".edit-btn");
-        const addButtons = document.querySelectorAll(".add-btn");
-        const deleteButtons = document.querySelectorAll(".delete-btn");
+</body>
+<script>
+    // --------------------------------- Script para filtrar en tiempo real y actualizar la tabla dinamicamente ---------------------------------
+    document.addEventListener("DOMContentLoaded", function() {
+        const searchDNI = document.getElementById("searchDNI");
+        const searchNombre = document.getElementById("searchNombre");
+        const searchSexo = document.getElementById("searchSexo");
+        const pacientesTable = document.getElementById("pacientesTable");
 
-        addButtons.forEach(btn => {
-            btn.addEventListener("click", function() {
-                event.preventDefault();
-                modalAgregarUsuario.style.display = "block";
+        window.fetchPacientes = function() {
+            const dni = searchDNI.value.trim();
+            const nombre_apellido = searchNombre.value.trim();
+            const sexo = searchSexo.value.trim();
+
+            const params = new URLSearchParams({
+                dni,
+                nombre_apellido,
+                sexo,
+                ajax: 1
             });
-        });
+
+            fetch(`pacientes.php?${params}`)
+                .then(response => response.json())
+                .then(data => {
+                    pacientesTable.innerHTML = "";
+                    if (data.length > 0) {
+                        data.forEach(pacientes => {
+                            const row = `
+                    <tr>
+                        <td>${pacientes.idPaciente}</td>
+                        <td>${pacientes.dni}</td>
+                        <td>${pacientes.nombre}</td>
+                        <td>${pacientes.apellido}</td>
+                        <td>${pacientes.sexo}</td>
+                        <td>${pacientes.FechaNacimiento}</td>
+                        <td>${pacientes.telefono}</td>
+                        <td>${pacientes.direccion}</td>
+                        <td>
+                            <a href="#" class="edit-btn" 
+                                data-idusuario="${pacientes.idUsuario}"
+                                data-idpaciente="${pacientes.idPaciente}"
+                                data-dni="${pacientes.dni}"
+                                data-nombre="${pacientes.nombre}"
+                                data-apellido="${pacientes.apellido}"
+                                data-sexo="${pacientes.sexo}"
+                                data-fechaNacimiento="${pacientes.FechaNacimiento}"
+                                data-telefono="${pacientes.telefono}"
+                                data-direccion="${pacientes.direccion}">
+                                <img src="../img/edit.png" width="35" height="35"></a>
+                            <a href="#" class="delete-btn" data-idpaciente="${pacientes.idPaciente}" data-idusuario="${pacientes.idUsuario}">
+                                <img src="../img/delete.png" width="35" height="35">
+                            </a>
+                        </td>
+                    </tr>
+                `;
+                            pacientesTable.innerHTML += row;
+                        });
+                    } else {
+                        pacientesTable.innerHTML = "<tr><td colspan='8'>No hay usuarios registrados</td></tr>";
+                    }
+
+                    // Vuelve a asignar eventos a los botones después de actualizar la tabla
+                    asignarEventosBotones();
+                })
+                .catch(error => console.error("Error en la búsqueda:", error));
+        }
+        // Eventos para filtrar en tiempo real
+        searchDNI.addEventListener("keyup", fetchPacientes);
+        searchNombre.addEventListener("keyup", fetchPacientes);
+        searchSexo.addEventListener("change", fetchPacientes);
+    });
+    // --------------------------------- Funcion para asignar eventos a los botones de editar y eliminar ---------------------------------
+    function asignarEventosBotones() {
+        const editButtons = document.querySelectorAll(".edit-btn");
+        const deleteButtons = document.querySelectorAll(".delete-btn");
 
         editButtons.forEach(btn => {
             btn.addEventListener("click", function() {
@@ -148,20 +215,6 @@ try {
                 modalEditarPaciente.style.display = "block";
             });
         });
-
-        closeButtons.forEach(button => {
-            button.addEventListener("click", function() {
-                modals.forEach(modal => modal.style.display = "none");
-            });
-        });
-
-        window.onclick = function(event) {
-            modals.forEach(modal => {
-                if (event.target == modal) {
-                    modal.style.display = "none";
-                }
-            });
-        };
 
         deleteButtons.forEach(btn => {
             btn.addEventListener("click", async event => {
@@ -204,7 +257,34 @@ try {
                 }
             });
         });
-    </script>
-</body>
+    }
+    // --------------------------------- Metodos para abrir y cerrar modales ---------------------------------
+    const modals = document.querySelectorAll(".modalAgregarUsuario, .modalEditarPaciente");
+    const closeButtons = document.querySelectorAll(".close");
+    const addButtons = document.querySelectorAll(".add-btn");
+
+    addButtons.forEach(btn => {
+        btn.addEventListener("click", function() {
+            event.preventDefault();
+            modalAgregarUsuario.style.display = "block";
+        });
+    });
+
+    closeButtons.forEach(button => {
+        button.addEventListener("click", function() {
+            modals.forEach(modal => modal.style.display = "none");
+        });
+    });
+
+    asignarEventosBotones();
+
+    window.onclick = function(event) {
+        modals.forEach(modal => {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        });
+    };
+</script>
 
 </html>

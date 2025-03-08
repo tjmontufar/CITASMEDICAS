@@ -28,6 +28,11 @@ try {
 } catch (PDOException $e) {
     die("Error al ejecutar la consulta: " . $e->getMessage());
 }
+
+if (isset($_GET['ajax'])) {
+    echo json_encode($medicos);
+    exit;
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -50,9 +55,9 @@ try {
             <?php include 'alert.php'; ?>
             <div class="filter-container">
                 <form method="GET" action="">
-                    <input type="text" name="dni" placeholder="Buscar por DNI" value="<?= $dni_filter ?>" autocomplete="off">
-                    <input type="text" name="nombre_apellido" placeholder="Buscar por Nombre/Apellido" value="<?= $nombre_apellido_filter ?>" autocomplete="off">
-                    <select name="especialidad">
+                    <input type="text" id="searchDNI" name="dni" placeholder="Buscar por DNI" value="<?= $dni_filter ?>" autocomplete="off">
+                    <input type="text" id="searchNombre" name="nombre_apellido" placeholder="Buscar por Nombre/Apellido" value="<?= $nombre_apellido_filter ?>" autocomplete="off">
+                    <select name="especialidad" id="searchEspecialidad">
                         <option value="">Especialidad</option>
                         <?php
                         include '../conexion.php';
@@ -66,7 +71,6 @@ try {
                         }
                         ?>
                     </select>
-                    <button type="submit">Filtrar</button>
                 </form>
             </div>
             <div class="table-container">
@@ -88,7 +92,7 @@ try {
                                 <th>ACCION</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="medicosTable">
                             <?php
                             if (count($medicos) > 0) {
                                 foreach ($medicos as $fila) {
@@ -125,19 +129,108 @@ try {
             </div>
         </main>
     </div>
-    <script>
-        const modals = document.querySelectorAll(".modalAgregarUsuario, .modalEditarMedico");
-        const closeButtons = document.querySelectorAll(".close");
-        const editButtons = document.querySelectorAll(".edit-btn");
-        const addButtons = document.querySelectorAll(".add-btn");
-        const deleteButtons = document.querySelectorAll(".delete-btn");
+</body>
+<script>
+    // --------------------------------- Script para filtrar en tiempo real y actualizar la tabla dinamicamente ---------------------------------
+    document.addEventListener("DOMContentLoaded", function() {
+        const searchDNI = document.getElementById("searchDNI");
+        const searchNombre = document.getElementById("searchNombre");
+        const searchEspecialidad = document.getElementById("searchEspecialidad");
+        const medicosTable = document.getElementById("medicosTable");
 
-        addButtons.forEach(btn => {
-            btn.addEventListener("click", function() {
-                event.preventDefault();
-                modalAgregarUsuario.style.display = "block";
+        window.fetchMedicos = function() {
+            const dni = searchDNI.value.trim();
+            const nombre_apellido = searchNombre.value.trim();
+            const especialidad = searchEspecialidad.value.trim();
+
+            const params = new URLSearchParams({
+                dni,
+                nombre_apellido,
+                especialidad,
+                ajax: 1
             });
+
+            fetch(`medicos.php?${params}`)
+                .then(response => response.json())
+                .then(data => {
+                    medicosTable.innerHTML = "";
+                    if (data.length > 0) {
+                        data.forEach(medicos => {
+                            const row = `
+                    <tr>
+                        <td>${medicos.idMedico}</td>
+                        <td>${medicos.dni}</td>
+                        <td>${medicos.nombre}</td>
+                        <td>${medicos.apellido}</td>
+                        <td>${medicos.nombreEspecialidad}</td>
+                        <td>${medicos.numeroLicenciaMedica}</td>
+                        <td>${medicos.anosExperiencia} años</td>
+                        <td>
+                            <a href="#" class="edit-btn" 
+                                data-idusuario="${medicos.idUsuario}"
+                                data-idmedico="${medicos.idMedico}"
+                                data-dni="${medicos.dni}"
+                                data-nombre="${medicos.nombre}"
+                                data-apellido="${medicos.apellido}"
+                                data-especialidad="${medicos.idEspecialidad}"
+                                data-licencia="${medicos.numeroLicenciaMedica}"
+                                data-experiencia="${medicos.anosExperiencia}">
+                                <img src="../img/edit.png" width="35" height="35"></a>
+                            <a href="#" class="delete-btn" data-idmedico="${medicos.idmedico}" data-idusuario="${medicos.idusuario}">
+                                <img src="../img/delete.png" width="35" height="35">
+                            </a>
+                        </td>
+                    </tr>
+                `;
+                            medicosTable.innerHTML += row;
+                        });
+                    } else {
+                        medicosTable.innerHTML = "<tr><td colspan='8'>No hay usuarios registrados</td></tr>";
+                    }
+
+                    // Vuelve a asignar eventos a los botones después de actualizar la tabla
+                    asignarEventosBotones();
+                })
+                .catch(error => console.error("Error en la búsqueda:", error));
+        }
+        // Eventos para filtrar en tiempo real
+        searchDNI.addEventListener("keyup", fetchMedicos);
+        searchNombre.addEventListener("keyup", fetchMedicos);
+        searchEspecialidad.addEventListener("change", fetchMedicos);
+    });
+
+    // --------------------------------- Metodos para abrir y cerrar modales ---------------------------------
+    const modals = document.querySelectorAll(".modalAgregarUsuario, .modalEditarMedico");
+    const closeButtons = document.querySelectorAll(".close");
+    const addButtons = document.querySelectorAll(".add-btn");
+
+    addButtons.forEach(btn => {
+        btn.addEventListener("click", function() {
+            event.preventDefault();
+            modalAgregarUsuario.style.display = "block";
         });
+    });
+
+    closeButtons.forEach(button => {
+        button.addEventListener("click", function() {
+            modals.forEach(modal => modal.style.display = "none");
+        });
+    });
+
+    asignarEventosBotones();
+
+    window.onclick = function(event) {
+        modals.forEach(modal => {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        });
+    };
+
+    // --------------------------------- Funcion para asignar eventos a los botones de editar y eliminar ---------------------------------
+    function asignarEventosBotones() {
+        const editButtons = document.querySelectorAll(".edit-btn");
+        const deleteButtons = document.querySelectorAll(".delete-btn");
 
         editButtons.forEach(btn => {
             btn.addEventListener("click", function() {
@@ -153,20 +246,6 @@ try {
                 modalEditarMedico.style.display = "block";
             });
         });
-
-        closeButtons.forEach(button => {
-            button.addEventListener("click", function() {
-                modals.forEach(modal => modal.style.display = "none");
-            });
-        });
-
-        window.onclick = function(event) {
-            modals.forEach(modal => {
-                if (event.target == modal) {
-                    modal.style.display = "none";
-                }
-            });
-        };
 
         deleteButtons.forEach(btn => {
             btn.addEventListener("click", async event => {
@@ -198,7 +277,10 @@ try {
                         text: data.message,
                         icon: data.status === "success" ? "success" : "error"
                     });
-                    if (data.status === "success") location.reload();
+                    if (data.status === "success") {
+                        modalEditarMedico.style.display = "none";
+                        fetchMedicos();
+                    }
                 } catch (error) {
                     Swal.fire({
                         title: "Error",
@@ -209,7 +291,8 @@ try {
                 }
             });
         });
-    </script>
-</body>
+
+    }
+</script>
 
 </html>

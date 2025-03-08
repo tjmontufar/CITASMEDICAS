@@ -17,7 +17,7 @@
                 <label for="add-dnimedico">DNI Médico</label>
                 <input type="text" name="dnimedico" id="add-dnimedico" autocomplete="off" required>
 
-                <label for="add-imedico" hidden>ID Médico</label>
+                <label for="add-idmedico" hidden>ID Médico</label>
                 <input type="text" name="idmedico" id="add-idmedico" autocomplete="off" required readonly="true" hidden>
                 
                 <label for="add-medico">Médico</label>
