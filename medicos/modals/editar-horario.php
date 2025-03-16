@@ -53,7 +53,7 @@
             </div>
             <div class="botones">
                 <button type="submit" class="estilobotones">Modificar Horario</button>
-                <button type="submit" class="estilobotones">Eliminar Horario</button>
+                <button type="button" class="estilobotones" id="delete-btn">Eliminar Horario</button>
                 <button type="button" class="estilobotones" onclick="abrirModalDesdeEditar()">Nuevo Horario</button>
 
             </div>
@@ -106,4 +106,55 @@
             });
         });
     }
+
+    const deleteButtons = document.querySelectorAll("#delete-btn");
+    deleteButtons.forEach(btn => {
+        btn.addEventListener("click", async event => {
+            event.preventDefault();
+            const idHorario = document.getElementById("edit-idHorario").value;
+            if (!idHorario) {
+                Swal.fire({
+                    title: "Error",
+                    text: "Seleccione un Horario Médico.",
+                    icon: "error"
+                });
+            } else {
+                const confirmacion = await Swal.fire({
+                    title: `¿Eliminar el Horario Nº ${idHorario}?`,
+                    text: "Esta acción no se puede deshacer.",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#d33",
+                    cancelButtonColor: "#3085d6",
+                    confirmButtonText: "Eliminar",
+                    cancelButtonText: "Cancelar"
+                });
+
+                if (!confirmacion.isConfirmed) return;
+                try {
+                    const response = await fetch("php/delete-horario.php", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/x-www-form-urlencoded"
+                        },
+                        body: `idHorario=${idHorario}`
+                    });
+                    const data = await response.json();
+                    await Swal.fire({
+                        title: data.status === "success" ? "Éxito" : "Error",
+                        text: data.message,
+                        icon: data.status === "success" ? "success" : "error"
+                    });
+                    if (data.status === "success") location.reload();
+                } catch (error) {
+                    Swal.fire({
+                        title: "Error",
+                        text: "Hubo un problema al eliminar el horario.",
+                        icon: "error"
+                    });
+                    console.error("Error:", error);
+                }
+            }
+        });
+    });
 </script>

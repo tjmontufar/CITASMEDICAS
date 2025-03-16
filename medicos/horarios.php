@@ -135,6 +135,21 @@ foreach ($cuposPorFecha as $row) {
                 font-size: 1.2rem;
             }
         }
+
+        @media (max-width: 724px) {
+            .calendar-container {
+                grid-template-columns: repeat(5, 1fr);
+            }
+
+            .day {
+                padding: 10px;
+                min-height: 60px;
+            }
+
+            .day h3 {
+                font-size: 1rem;
+            }
+        }
     </style>
 </head>
 
@@ -215,6 +230,7 @@ foreach ($cuposPorFecha as $row) {
             return;
         }
         modal.style.display = "block";
+        
         document.getElementById("add-fecha").value = fecha;
         document.getElementById("add-diaSemana").value = dia;
         btneditar.style.display = "none";
@@ -222,14 +238,21 @@ foreach ($cuposPorFecha as $row) {
 
     function abrirModalEditarHorario(fecha, dia) {
         const modal = document.getElementById("modalEditarHorario");
-        
+
         if (!modal) {
             console.error("El modal no existe en el DOM.");
             return;
         }
         modal.style.display = "block";
+        document.getElementById("edit-idHorario").value = "";
+        document.getElementById("edit-dnimedico").value = "";
+        document.getElementById("edit-idmedico").value = "";
+        document.getElementById("edit-nombreMedico").value = "";
         document.getElementById("edit-fecha").value = fecha;
         document.getElementById("edit-diaSemana").value = dia;
+        document.getElementById("edit-hora").value = "";
+        document.getElementById("edit-fin").value = "";
+        document.getElementById("edit-cupos").value = "";
         obtenerHorariosDisponibles(fecha);
         btneditar.style.display = "block";
     }
@@ -304,7 +327,6 @@ foreach ($cuposPorFecha as $row) {
             }
         });
     };
-
 
     document.addEventListener('DOMContentLoaded', function() {
 
