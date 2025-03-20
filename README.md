@@ -56,3 +56,8 @@ Se agrega todas las tablas del sistema una mecánica de actualización dinámica
 Se trabaja la sección de Horarios Médicos en la interfaz del Médico donde se agregan funcionalidades de navegar entre el calendario, y asignar cupos en las diferentes fechas por Médico asignado.
 
 Contiene funciones de agregar, eliminar y editar los diferentes horarios médicos.
+
+--- 20/03/2025 ---
+De la misma forma para el modulo del Administrador se copia la misma estructura y funcionalidad de la seccion de Horarios para que el administrador pueda agregar/editar/eliminar los horarios asignados en el sistema.
+
+Luego se agrega los complementos para la Agregar/Editar/Eliminar Documentos Medicos en el modulo del Medico, donde muestra una tabla listando los documentos medicos en el sistema.
