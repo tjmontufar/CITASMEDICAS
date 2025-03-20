@@ -6,7 +6,7 @@
         <li><a href="medicos.php"><i class="fas fa-user-doctor"></i>Médicos</a></li>
         <li><a href="pacientes.php"><i class="fas fa-hospital-user"></i>Pacientes</a></li>
         <li><a href="especialidades.php"><i class="fa-solid fa-notes-medical"></i>Especialidades</a></li>
-        <li><a href="#"><i class="fa-solid fa-calendar"></i>Horarios</a></li>
+        <li><a href="horarios.php"><i class="fa-solid fa-calendar"></i>Horarios</a></li>
         <li><a href="ListadeCitas.php"><i class="fa-solid fa-stethoscope"></i>Citas</a></li>
         <li><a href="#"><i class="fa-solid fa-wallet"></i>Financiamientos</a></li>
     </ul>

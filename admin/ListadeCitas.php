@@ -20,15 +20,17 @@ $sql = "SELECT Citas.idCita,
        Citas.idPaciente, U1.nombre + ' ' + U1.apellido AS paciente, 
        U2.dni AS dnimedico,
        Citas.idMedico, U2.nombre + ' ' + U2.apellido AS medico, 
-       Citas.fecha, 
+       HorariosMedicos.fecha, 
        CONVERT(VARCHAR, Citas.hora, 108) AS hora,
        Citas.motivo,
-       Citas.estado
+       Citas.estado,
+       Citas.idHorario
         FROM Citas 
         INNER JOIN Pacientes ON Citas.idPaciente = Pacientes.idPaciente
         INNER JOIN Usuarios U1 ON Pacientes.idUsuario = U1.idUsuario
         INNER JOIN Medicos ON Citas.idMedico = Medicos.idMedico
         INNER JOIN Usuarios U2 ON Medicos.idUsuario = U2.idUsuario
+        INNER JOIN HorariosMedicos ON Citas.idHorario = HorariosMedicos.idHorario
         WHERE 1=1";
 
 if ($medico_filter) {
