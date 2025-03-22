@@ -20,17 +20,16 @@ $sql = "SELECT Citas.idCita,
        Citas.idPaciente, U1.nombre + ' ' + U1.apellido AS paciente, 
        U2.dni AS dnimedico,
        Citas.idMedico, U2.nombre + ' ' + U2.apellido AS medico, 
-       HorariosMedicos.fecha, 
+       HorariosMedicos.fecha AS FechaAtencion, 
        CONVERT(VARCHAR, Citas.hora, 108) AS hora,
        Citas.motivo,
-       Citas.estado,
-       Citas.idHorario
+       Citas.estado
         FROM Citas 
         INNER JOIN Pacientes ON Citas.idPaciente = Pacientes.idPaciente
         INNER JOIN Usuarios U1 ON Pacientes.idUsuario = U1.idUsuario
         INNER JOIN Medicos ON Citas.idMedico = Medicos.idMedico
         INNER JOIN Usuarios U2 ON Medicos.idUsuario = U2.idUsuario
-        INNER JOIN HorariosMedicos ON Citas.idHorario = HorariosMedicos.idHorario
+		INNER JOIN HorariosMedicos ON Citas.idHorario = HorariosMedicos.idHorario
         WHERE 1=1";
 
 if ($medico_filter) {
@@ -40,7 +39,7 @@ if ($paciente_filter) {
     $sql .= " AND U1.nombre LIKE '%$paciente_filter%'";
 }
 if ($fecha_filter) {
-    $sql .= " AND Citas.fecha = '$fecha_filter'";
+    $sql .= " AND HorariosMedicos.fecha = '$fecha_filter'";
 }
 if ($hora_filter) {
     $sql .= " AND Citas.hora = '$hora_filter'";
@@ -240,10 +239,10 @@ if (isset($_GET['export_word'])) {
                                 <th>ID</th>
                                 <th>Paciente</th>
                                 <th>Médico</th>
-                                <th>Fecha</th>
                                 <th>Hora</th>
                                 <th>Motivo</th>
                                 <th>Estado</th>
+                                <th>Fecha</th>
                                 <th>Acción</th>
                             </tr>
                         </thead>
@@ -263,10 +262,10 @@ if (isset($_GET['export_word'])) {
                                         <td>{$fila['idCita']}</td>
                                         <td>{$fila['paciente']}</td>
                                         <td>{$fila['medico']}</td>
-                                        <td>{$fila['fecha']}</td>
                                         <td>{$hora_formateada}</td>
                                         <td>{$fila['motivo']}</td>
                                         <td class='$claseEstado'>{$fila['estado']}</td>
+                                        <td>{$fila['FechaAtencion']}</td>
                                         <td>
                                             <a href='#' class='edit-btn'
                                                 data-idcita='{$fila['idCita']}'
@@ -276,7 +275,6 @@ if (isset($_GET['export_word'])) {
                                                 data-idmedico='{$fila['idMedico']}'
                                                 data-dnimedico='{$fila['dnimedico']}'
                                                 data-medico='{$fila['medico']}'
-                                                data-fecha='{$fila['fecha']}'
                                                 data-hora='{$fila['hora']}'
                                                 data-motivo='{$fila['motivo']}'
                                                 data-estado='{$fila['estado']}'><img src='../img/edit.png' width='35' height='35'></a>
@@ -328,10 +326,10 @@ if (isset($_GET['export_word'])) {
                         <td>${citas.idCita}</td>
                         <td>${citas.paciente}</td>
                         <td>${citas.medico}</td>
-                        <td>${citas.fecha}</td>
                         <td>${citas.hora}</td>
                         <td>${citas.motivo}</td>
                         <td class="${citas.estado}">${citas.estado}</td>
+                        <td>${citas.FechaAtencion}</td>
                         <td>
                             <a href="#" class="edit-btn" 
                                 data-idcita="${citas.idCita}"
