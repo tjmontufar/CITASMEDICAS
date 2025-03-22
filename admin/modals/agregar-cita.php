@@ -44,7 +44,7 @@
                 <select id="add-horario" name="idHorario" required>
                     <option value="">Seleccionar</option>
                     <?php
-                    $sql = "SELECT idHorario, diaSemana + ' ' + CONVERT(VARCHAR(5), HoraInicio, 108) + ' - ' + CONVERT(VARCHAR(5), HoraFin, 108) AS Horario FROM HorariosMedicos";
+                    $sql = "SELECT idHorario, CONVERT(VARCHAR(5), HoraInicio, 108) + ' - ' + CONVERT(VARCHAR(5), HoraFin, 108) + ' ' + diaSemana AS Horario FROM HorariosMedicos";
                     $query = $conn->prepare($sql);
                     $query->execute();
                     $horarios = $query->fetchAll(PDO::FETCH_ASSOC);

@@ -61,3 +61,7 @@ Contiene funciones de agregar, eliminar y editar los diferentes horarios médico
 De la misma forma para el modulo del Administrador se copia la misma estructura y funcionalidad de la seccion de Horarios para que el administrador pueda agregar/editar/eliminar los horarios asignados en el sistema.
 
 Luego se agrega los complementos para la Agregar/Editar/Eliminar Documentos Medicos en el modulo del Medico, donde muestra una tabla listando los documentos medicos en el sistema.
+
+--- 22/03/2025 ---
+Se agregan los complementos para el modulo de pacientes y se corrigen problemas de insercion en citas medicas para Administrador o Medico en el sistema.
+Se implementa actualizacion dinamica sin recargar a la tabla de pacientes en el modulo de Medicos.
