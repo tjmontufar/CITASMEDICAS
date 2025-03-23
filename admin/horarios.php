@@ -12,7 +12,7 @@ $anioActual = isset($_GET['anio']) ? $_GET['anio'] : date('Y');
 $diasEnMes = cal_days_in_month(CAL_GREGORIAN, $mesActual, $anioActual);
 
 $sqlCupos = "SELECT H.fecha, 
-       SUM(H.cupos) - COALESCE(COUNT(C.idCita), 0) AS cuposDisponibles
+       SUM(H.cupos) AS cuposDisponibles
 FROM HorariosMedicos H
 LEFT JOIN Citas C 
     ON H.idHorario = C.idHorario 

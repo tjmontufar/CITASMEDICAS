@@ -65,3 +65,5 @@ Luego se agrega los complementos para la Agregar/Editar/Eliminar Documentos Medi
 --- 22/03/2025 ---
 Se agregan los complementos para el modulo de pacientes y se corrigen problemas de insercion en citas medicas para Administrador o Medico en el sistema.
 Se implementa actualizacion dinamica sin recargar a la tabla de pacientes en el modulo de Medicos.
+
+Se hace una importante modificacion en el formulario de modalAgregarCita donde se puede buscar el paciente escribiendo el nombre y el medico se puede asignar buscando en la fecha seleccionada, lo cual hace más facil la búsqueda y asignación. Se corrige un problema al mostrar el total de cupos del horario.

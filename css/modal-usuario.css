@@ -104,6 +104,46 @@ form .modificar {
 form button:hover {
     background-color: #0d81c1;
 }
+/* Estilos de subtablas */
+.modal-content .table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    border-radius: 10px;
+}
+
+.modal-content .tabla-container {
+    background: white;
+    padding: 5px;
+    border-radius: 15px;
+    width: 100%;
+    max-width: 1200px;
+    margin: 20px auto;
+    text-align: center;
+}
+
+.modal-content table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.modal-content table th, table td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.modal-content table th {
+    background: #16a8e2;
+    color: white;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 14px;
+}
+
+.modal-content table tr:hover {
+    background-color: #f8f9fa;
+    transition: background-color 0.2s ease;
+}
 
 @media (max-width: 900px) {
     .modal-content {

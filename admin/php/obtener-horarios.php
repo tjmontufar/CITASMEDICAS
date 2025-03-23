@@ -23,7 +23,7 @@ if (isset($_GET['fecha'])) {
     if ($horarios) {
         echo json_encode(['success' => true, 'horarios' => $horarios]);
     } else {
-        echo json_encode(['success' => false]);
+        echo json_encode(['success' => false, 'horarios' => []]);
     }
 }
 ?>
