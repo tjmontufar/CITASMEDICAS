@@ -6,7 +6,7 @@ if (isset($_GET['fecha'])) {
 
     // Consulta para obtener los horarios de la fecha seleccionada
     $sql = "SELECT T1.idHorario, T1.fecha, T1.diaSemana, T3.dni AS DNIMedico, T2.idMedico, 
-                    CONCAT(T3.nombre,' ',T3.apellido) AS Medico, 
+                    CONCAT(T3.nombre,' ',T3.apellido) AS medico, 
                     CONVERT(VARCHAR(5), T1.horaInicio, 108) AS HoraInicio, 
                     CONVERT(VARCHAR(5), T1.horaFin, 108) AS HoraFin, T1.cupos
             FROM HorariosMedicos T1

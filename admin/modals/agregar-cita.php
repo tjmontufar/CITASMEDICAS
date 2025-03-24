@@ -49,8 +49,7 @@
                 <label for="add-fecha">Fecha</label>
                 <input id="add-fecha" onchange="obtenerHorariosDisponibles()" type="date" name="fecha" autocomplete="off" required>
             </div>
-            <div class="tabla-container" id="tablaHorariosDisponibles">
-
+            <div class="tabla-container" id="tablaHorariosDisponiblesAgregar">
                 <div class="table-responsive">
                     <table>
                         <thead>
@@ -73,8 +72,8 @@
                 <label for="add-dnimedico">DNI Médico</label>
                 <input type="text" name="dnimedico" id="add-dnimedico" autocomplete="off" required>
 
-                <label for="add-idmedico" >ID Médico</label>
-                <input type="text" name="idmedico" id="add-idmedico" autocomplete="off" required readonly="true" >
+                <label for="add-idmedico">ID Médico</label>
+                <input type="text" name="idmedico" id="add-idmedico" autocomplete="off" required readonly="true">
 
                 <label for="add-medico">Médico</label>
                 <input type="text" name="medico" id="add-medico" autocomplete="off" required readonly="true">
@@ -93,7 +92,7 @@
                     <option value="Cancelada">Cancelada</option>
                 </select>
 
-                <label for="add-idhorario">Horario</label>
+                <label for="add-idhorario">ID Horario</label>
                 <input id="add-idhorario" type="text" name="idHorario" autocomplete="off" required>
             </div>
             <button type="submit" class="modificar">Agregar Cita</button>
@@ -101,81 +100,85 @@
     </div>
 </div>
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        document.getElementById("add-dnimedico").addEventListener("input", function() {
-            let dni = this.value.trim();
-            if (dni.length > 0) {
-                fetch("php/buscar-medico.php", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/x-www-form-urlencoded"
-                        },
-                        body: "query=" + encodeURIComponent(dni),
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        document.getElementById("add-medico").value = data.nombre || "No encontrado";
-                        document.getElementById("add-idmedico").value = data.idMedico || "No encontrado";
-                    })
-                    .catch(error => console.error("Error:", error));
-            } else {
-                document.getElementById("add-medico").value = "";
-                document.getElementById("add-idmedico").value = "";
-            }
-        });
+    document.getElementById("add-fecha").addEventListener("input", function() {
+        const fecha = this.value;
+        const tablaContainer = document.getElementById("tablaHorariosDisponiblesAgregar");
+
+        if (!fecha) {
+            // Ocultar la tabla
+            tablaContainer.style.display = "none";
+
+            // Limpiar los campos del médico
+            document.getElementById("add-dnimedico").value = "";
+            document.getElementById("add-idmedico").value = "";
+            document.getElementById("add-medico").value = "";
+            document.getElementById("add-idhorario").value = "";
+        }
     });
 
-    function obtenerHorariosDisponibles() {
-        const fecha = document.getElementById("add-fecha").value;
-        const tablaHorariosDisponibles = document.getElementById("tablaHorariosDisponibles");
+    function obtenerHorariosDisponibles(origen) {
+        const fecha = document.getElementById(origen === "editar" ? "edit-fecha" : "add-fecha").value;
+        const tablaID = origen === "editar" ? "tablaHorariosDisponiblesEditar" : "tablaHorariosDisponiblesAgregar";
+        const tablaContainer = document.getElementById(tablaID);
+
+        console.log(`Obteniendo horarios para: ${origen}, Fecha: ${fecha}`);
+
+        if (!fecha) {
+            return;
+        }
+
         const xhr = new XMLHttpRequest();
-        xhr.open("GET", "php/obtener-horarios.php?fecha=" + fecha, true);
+        xhr.open("GET", `php/obtener-horarios.php?fecha=${fecha}`, true);
         xhr.onreadystatechange = function() {
             if (xhr.readyState === 4 && xhr.status === 200) {
                 const respuesta = JSON.parse(xhr.responseText);
-                if (respuesta.success) {
-                    actualizarTablaHorarios(respuesta.horarios);
-                    tablaHorariosDisponibles.style.display = "block";
+                console.log("Respuesta del servidor:", respuesta);
+
+                if (respuesta.success && respuesta.horarios.length > 0) {
+                    actualizarTablaHorarios(respuesta.horarios, tablaID);
+                    tablaContainer.style.display = "block";
                 } else {
-                    actualizarTablaHorarios(respuesta.horarios);
-                    //tablaHorariosDisponibles.style.display = "none";
+                    actualizarTablaHorarios([], tablaID);
+                    tablaContainer.style.display = "block";
+                    //tablaContainer.style.display = "none";
                 }
             }
         };
         xhr.send();
     }
 
-    function actualizarTablaHorarios(horarios) {
-        const tbody = document.querySelector("#modalAgregarCita tbody");
-        tbody.innerHTML = ""; // Limpiar la tabla antes de agregar nuevos datos
+    function actualizarTablaHorarios(horarios, tablaID) {
+        const tbody = document.querySelector(`#${tablaID} tbody`);
+        tbody.innerHTML = ""; // Limpiar la tabla
 
         if (horarios.length > 0) {
             horarios.forEach(horario => {
                 const tr = document.createElement("tr");
                 tr.innerHTML = `
-                <td>${horario.fecha}</td>
-                <td>${horario.diaSemana}</td>
-                <td>${horario.Medico}</td>
-                <td>${horario.HoraInicio} - ${horario.HoraFin}</td>
-                <td>${horario.cupos}</td>
-                <td>
-                    <a href="#" class="edit-btn"
-                        data-idhorario="${horario.idHorario}"
-                        data-dnimedico="${horario.DNIMedico}"
-                        data-idmedico="${horario.idMedico}"
-                        data-nombremedico="${horario.Medico}">
-                        <img src="../img/edit.png" width="35" height="35">
-                    </a>
-                </td>
-            `;
+            <td>${horario.fecha}</td>
+            <td>${horario.diaSemana}</td>
+            <td>${horario.medico}</td>
+            <td>${horario.HoraInicio} - ${horario.HoraFin}</td>
+            <td>${horario.cupos}</td>
+            <td>
+                <a href="#" class="edit-btn"
+                    data-idhorario="${horario.idHorario}"
+                    data-dnimedico="${horario.DNIMedico}"
+                    data-idmedico="${horario.idMedico}"
+                    data-medico="${horario.medico}">
+                    <img src="../img/edit.png" width="35" height="35">
+                </a>
+            </td>
+        `;
                 tbody.appendChild(tr);
             });
         } else {
             tbody.innerHTML = "<tr><td colspan='6' style='text-align:center;'>No hay médicos disponibles en este horario.</td></tr>";
         }
-
-        SeleccionarMedico();
     }
+
+    // Llamadas en los inputs de fecha
+    document.getElementById("add-fecha").addEventListener("change", () => obtenerHorariosDisponibles("agregar"));
 
     // Lista dinamica de pacientes
     document.addEventListener("DOMContentLoaded", function() {
@@ -232,16 +235,15 @@
         });
     });
 
-    function SeleccionarMedico() {
-        const editButtons = document.querySelectorAll(".edit-btn");
-        editButtons.forEach(btn => {
-            btn.addEventListener("click", function(event) {
-                event.preventDefault();
-                document.getElementById("add-dnimedico").value = this.dataset.dnimedico;
-                document.getElementById("add-idmedico").value = this.dataset.idmedico;
-                document.getElementById("add-medico").value = this.dataset.nombremedico;
-                document.getElementById("add-idhorario").value = this.dataset.idhorario;
-            });
-        });
-    }
+    document.addEventListener("click", function(event) {
+        if (event.target.closest(".edit-btn")) {
+            event.preventDefault();
+            let btn = event.target.closest(".edit-btn");
+
+            document.getElementById("add-dnimedico").value = btn.dataset.dnimedico;
+            document.getElementById("add-idmedico").value = btn.dataset.idmedico;
+            document.getElementById("add-medico").value = btn.dataset.medico;
+            document.getElementById("add-idhorario").value = btn.dataset.idhorario;
+        }
+    });
 </script>

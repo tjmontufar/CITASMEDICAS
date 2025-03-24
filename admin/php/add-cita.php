@@ -33,6 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     try {
+        // Verificar que la hora de la cita esté dentro del rango del horario seleccionado
         $consulta = "SELECT horaInicio, horaFin FROM HorariosMedicos WHERE idHorario = ?";
         $statement = $conn->prepare($consulta);
         $statement->execute([$idhorario]);
@@ -44,6 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             exit();
         }
 
+        // Verificar que no exista otra cita con el mismo paciente, médico, fecha y hora
         $consulta = "SELECT * FROM Citas WHERE idPaciente = ? AND idMedico = ? AND idHorario = ? AND hora = ?";
         $statement = $conn->prepare($consulta);
         $statement->execute([$idpaciente, $idmedico, $idhorario, $hora]);

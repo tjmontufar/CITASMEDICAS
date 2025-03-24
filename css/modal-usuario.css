@@ -9,7 +9,10 @@
 }
 
 /* Modal */
-.modalEditarUsuario, .modalAgregarUsuario, .modalEditarMedico, .modalEditarPaciente, .modalAgregarEspecialidad, .modalEditarEspecialidad {
+.modalEditarUsuario, .modalAgregarUsuario, 
+.modalEditarMedico, .modalEditarPaciente, 
+.modalAgregarEspecialidad, .modalEditarEspecialidad,
+.modalAgregarCita, .modalEditarCita {
     display: none; /* Oculto por defecto */
     position: fixed;
     z-index: 1000;
@@ -105,13 +108,15 @@ form button:hover {
     background-color: #0d81c1;
 }
 /* Estilos de subtablas */
-.modal-content .table-responsive {
+.modal-content .table-responsive, 
+.modal-content .edit-table-responsive {
     width: 100%;
     overflow-x: auto;
     border-radius: 10px;
 }
 
-.modal-content .tabla-container {
+.modal-content .tabla-container, 
+.modal-content .edit-tabla-container {
     background: white;
     padding: 5px;
     border-radius: 15px;

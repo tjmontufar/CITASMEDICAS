@@ -67,3 +67,6 @@ Se agregan los complementos para el modulo de pacientes y se corrigen problemas 
 Se implementa actualizacion dinamica sin recargar a la tabla de pacientes en el modulo de Medicos.
 
 Se hace una importante modificacion en el formulario de modalAgregarCita donde se puede buscar el paciente escribiendo el nombre y el medico se puede asignar buscando en la fecha seleccionada, lo cual hace más facil la búsqueda y asignación. Se corrige un problema al mostrar el total de cupos del horario.
+
+--- 23/03/2025 ---
+Se actualiza la logica de la ventana modalEditarCita usando los mismos ajustes que en modalAgregarCita para buscar el paciente y medico de una forma más rápida y fácil de asignar, se corrigen errores al momento de editar la cita.
