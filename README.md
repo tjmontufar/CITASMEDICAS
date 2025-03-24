@@ -74,3 +74,4 @@ Se corrige un error en la busqueda de pacientes en modalAgregarCita que impedia 
 
 --- 24/03/2025 ---
 Se agrega una mejora en la asignacion de horarios medicos donde se puede obtener sugerencias de medicos existentes en la base de datos del sistema para una busqueda mas rapida y facil de hacer.
+Se implementan las mismas actualizaciones en Médicos para las secciones de Horarios y Citas Médicas como en Administrador.

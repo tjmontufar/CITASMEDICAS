@@ -40,8 +40,6 @@ foreach ($cuposPorFecha as $row) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Horarios Médicos</title>
-
-    <link rel="stylesheet" href="../css/tabla.css">
     <style>
         .schedule-container {
             background: #ffffff;
