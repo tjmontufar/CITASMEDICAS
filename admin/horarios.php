@@ -246,7 +246,7 @@ foreach ($cuposPorFecha as $row) {
         document.getElementById("edit-idHorario").value = "";
         document.getElementById("edit-dnimedico").value = "";
         document.getElementById("edit-idmedico").value = "";
-        document.getElementById("edit-nombreMedico").value = "";
+        document.getElementById("edit-buscarmedico").value = "";
         document.getElementById("edit-fecha").value = fecha;
         document.getElementById("edit-diaSemana").value = dia;
         document.getElementById("edit-hora").value = "";
@@ -282,7 +282,7 @@ foreach ($cuposPorFecha as $row) {
                 tr.innerHTML = `
                 <td>${horario.fecha}</td>
                 <td>${horario.diaSemana}</td>
-                <td>${horario.Medico}</td>
+                <td>${horario.medico}</td>
                 <td>${horario.HoraInicio} - ${horario.HoraFin}</td>
                 <td>${horario.cupos}</td>
                 <td>
@@ -290,7 +290,7 @@ foreach ($cuposPorFecha as $row) {
                     data-idhorario="${horario.idHorario}"
                     data-dnimedico="${horario.DNIMedico}"
                     data-idmedico="${horario.idMedico}"
-                    data-nombremedico="${horario.Medico}"
+                    data-nombremedico="${horario.medico}"
                     data-fecha="${horario.fecha}"
                     data-diasemana="${horario.diaSemana}"
                     data-horainicio="${horario.HoraInicio}"

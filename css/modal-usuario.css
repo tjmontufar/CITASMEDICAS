@@ -12,7 +12,8 @@
 .modalEditarUsuario, .modalAgregarUsuario, 
 .modalEditarMedico, .modalEditarPaciente, 
 .modalAgregarEspecialidad, .modalEditarEspecialidad,
-.modalAgregarCita, .modalEditarCita {
+.modalAgregarCita, .modalEditarCita,
+.modalAgregarHorario, .modalEditarHorario {
     display: none; /* Oculto por defecto */
     position: fixed;
     z-index: 1000;
@@ -148,6 +149,28 @@ form button:hover {
 .modal-content table tr:hover {
     background-color: #f8f9fa;
     transition: background-color 0.2s ease;
+}
+
+form .botones {
+    display: flex;
+    justify-content: space-between;
+}
+
+form .estilobotones {
+    width: 100%;
+    padding: 10px;
+    font-size: 18px;
+    color: #fff;
+    background-color: #16a8e2;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 20px;
+    margin-left: 5px;
+}
+
+form .estilobotones:hover {
+    background-color: #0d81c1;
 }
 
 @media (max-width: 900px) {

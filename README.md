@@ -71,3 +71,6 @@ Se hace una importante modificacion en el formulario de modalAgregarCita donde s
 --- 23/03/2025 ---
 Se actualiza la logica de la ventana modalEditarCita usando los mismos ajustes que en modalAgregarCita para buscar el paciente y medico de una forma más rápida y fácil de asignar, se corrigen errores al momento de editar la cita.
 Se corrige un error en la busqueda de pacientes en modalAgregarCita que impedia sugerir los pacientes disponibles.
+
+--- 24/03/2025 ---
+Se agrega una mejora en la asignacion de horarios medicos donde se puede obtener sugerencias de medicos existentes en la base de datos del sistema para una busqueda mas rapida y facil de hacer.
