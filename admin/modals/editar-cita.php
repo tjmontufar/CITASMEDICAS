@@ -46,7 +46,7 @@
                 <label for="edit-buscarpaciente">Paciente</label>
                 <div class="autocomplete-container">
                     <input type="text" id="edit-buscarpaciente" placeholder="Buscar paciente..." autocomplete="off">
-                    <div class="suggestions" id="suggestions"></div>
+                    <div class="suggestions" id="suggestionsEditar"></div>
                 </div>
 
                 <label for="edit-fecha">Fecha</label>
@@ -182,21 +182,30 @@
     // Llamadas en los inputs de fecha
     document.getElementById("edit-fecha").addEventListener("change", () => obtenerHorariosDisponibles("editar"));
 
+    // Limpiar campos de pacientes si está vacío
+    document.getElementById("edit-buscarpaciente").addEventListener("input", function() {
+        const paciente = this.value;
+
+        if(!paciente) {
+            document.getElementById("edit-idpaciente").value = "";
+            document.getElementById("edit-dnipaciente").value = "";
+        }
+    });
+
     // Lista dinamica de pacientes
     document.addEventListener("DOMContentLoaded", function() {
-        const input = document.getElementById("edit-buscarpaciente");
-        const suggestionsBox = document.getElementById("suggestions");
+        const inputEditar = document.getElementById("edit-buscarpaciente");
+        const suggestionsEditar = document.getElementById("suggestionsEditar");
 
-        input.addEventListener("input", function() {
+        inputEditar.addEventListener("input", function() {
             let query = this.value.trim();
+            suggestionsEditar.innerHTML = "";
 
-            suggestionsBox.innerHTML = ""; // Limpiar sugerencias
             if (query.length === 0) {
-                suggestionsBox.style.display = "none";
+                suggestionsEditar.style.display = "none";
                 return;
             }
 
-            // Enviar consulta AJAX al servidor
             fetch("php/buscar-paciente.php", {
                     method: "POST",
                     headers: {
@@ -206,36 +215,36 @@
                 })
                 .then(response => response.json())
                 .then(data => {
-                    suggestionsBox.innerHTML = "";
+                    suggestionsEditar.innerHTML = "";
                     if (data.length > 0) {
-                        suggestionsBox.style.display = "block";
+                        suggestionsEditar.style.display = "block";
                         data.forEach(paciente => {
                             let div = document.createElement("div");
                             div.textContent = paciente.Paciente;
-                            div.dataset.id = paciente.idPaciente; // Guardar ID en el elemento
-                            div.dataset.dni = paciente.dni; // Guardar DNI en el elemento
+                            div.dataset.id = paciente.idPaciente;
+                            div.dataset.dni = paciente.dni;
                             div.addEventListener("click", function() {
-                                input.value = this.textContent;
+                                inputEditar.value = this.textContent;
                                 document.getElementById("edit-idpaciente").value = this.dataset.id;
                                 document.getElementById("edit-dnipaciente").value = this.dataset.dni;
-                                suggestionsBox.style.display = "none";
+                                suggestionsEditar.style.display = "none";
                             });
-                            suggestionsBox.appendChild(div);
+                            suggestionsEditar.appendChild(div);
                         });
                     } else {
-                        suggestionsBox.style.display = "none";
+                        suggestionsEditar.style.display = "none";
                     }
                 })
                 .catch(error => console.error("Error:", error));
         });
 
-        // Ocultar sugerencias si se hace clic fuera
         document.addEventListener("click", function(e) {
             if (!document.querySelector(".autocomplete-container").contains(e.target)) {
-                suggestionsBox.style.display = "none";
+                suggestionsEditar.style.display = "none";
             }
         });
     });
+
 
     document.addEventListener("click", function(event) {
         if (event.target.closest(".edit-btn")) {
