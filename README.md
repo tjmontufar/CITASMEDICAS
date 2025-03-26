@@ -76,3 +76,6 @@ Se corrige un error en la busqueda de pacientes en modalAgregarCita que impedia 
 Se agrega una mejora en la asignacion de horarios medicos donde se puede obtener sugerencias de medicos existentes en la base de datos del sistema para una busqueda mas rapida y facil de hacer.
 Se implementan las mismas actualizaciones en Médicos para las secciones de Horarios y Citas Médicas como en Administrador.
 Se mejora la logica de la seccion de Documentos medicos y se actualiza el modalAgregarDocumento para poder seleccionar las citas registradas de forma mas facil y rapida, se agrega actualizacion dinamica a la tabla de documentos medicos.
+
+--- 26/03/2025 ---
+Se hacen cambios en la modalEditarDocumentos en la seccion de Documentos Medicos para poder actualizar la información en base a los cambios realizados en modalAgregarDocumentos y se corrige un error que autorrellenaba la misma formación de paciente y medico en la modalAgregarDocumentos desde presionar editar.
