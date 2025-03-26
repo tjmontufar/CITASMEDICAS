@@ -113,9 +113,8 @@ if (isset($_GET['ajax'])) {
                                         data-apellido='{$fila['apellido']}'
                                         data-especialidad='{$fila['idEspecialidad']}'
                                         data-licencia='{$fila['numeroLicenciaMedica']}'
-                                        data-experiencia='{$fila['anosExperiencia']}'>
-                                    <img src=\"../img/edit.png\" width=\"35\" height=\"35\"></a>
-                                    <a href='#' class='delete-btn' data-idmedico='{$fila['idMedico']}' data-idusuario='{$fila['idUsuario']}'><img src=\"../img/delete.png\" width=\"35\" height=\"35\"></a>
+                                        data-experiencia='{$fila['anosExperiencia']}'></a>
+                                    <a href='#' class='delete-btn' data-idmedico='{$fila['idMedico']}' data-idusuario='{$fila['idUsuario']}'></a>
                                 </td>
                               </tr>";
                                 }
@@ -174,11 +173,8 @@ if (isset($_GET['ajax'])) {
                                 data-apellido="${medicos.apellido}"
                                 data-especialidad="${medicos.idEspecialidad}"
                                 data-licencia="${medicos.numeroLicenciaMedica}"
-                                data-experiencia="${medicos.anosExperiencia}">
-                                <img src="../img/edit.png" width="35" height="35"></a>
-                            <a href="#" class="delete-btn" data-idmedico="${medicos.idmedico}" data-idusuario="${medicos.idusuario}">
-                                <img src="../img/delete.png" width="35" height="35">
-                            </a>
+                                data-experiencia="${medicos.anosExperiencia}"></a>
+                            <a href="#" class="delete-btn" data-idmedico="${medicos.idmedico}" data-idusuario="${medicos.idusuario}"></a>
                         </td>
                     </tr>
                 `;

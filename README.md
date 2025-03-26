@@ -79,3 +79,4 @@ Se mejora la logica de la seccion de Documentos medicos y se actualiza el modalA
 
 --- 26/03/2025 ---
 Se hacen cambios en la modalEditarDocumentos en la seccion de Documentos Medicos para poder actualizar la información en base a los cambios realizados en modalAgregarDocumentos y se corrige un error que autorrellenaba la misma formación de paciente y medico en la modalAgregarDocumentos desde presionar editar.
+Se implementa una mejora en los botones de la tablas que cambian su color a uno mas llamativo al momento de colocar el cursor sobre él.

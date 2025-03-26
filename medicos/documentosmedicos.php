@@ -271,11 +271,9 @@ $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                                 data-tipo='{$fila['tipoDocumento']}'
                                                 data-descripcion='{$fila['descripcion']}'
                                                 data-fecha='{$fila['fechaSubida']}'
-                                                data-fechacita='{$fila['FechaCita']}'>
-                                                <img src='../img/edit.png' width='35' height='35'></a>
-                                            <a href='#' class='delete-btn' data-id='{$fila['idDocumento']}'>
-                                                <img src='../img/delete.png' width='35' height='35'>
-                                            </a>
+                                                data-fechacita='{$fila['FechaCita']}'></a>
+                                            <a href='#' class='pdf-btn' data-id='{$fila['idDocumento']}'></a>
+                                            <a href='#' class='delete-btn' data-id='{$fila['idDocumento']}'></a>
                                         </td>
                                     </tr>";
                                 }
@@ -338,11 +336,9 @@ $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 data-tipo="${documentos.tipoDocumento}"
                                 data-descripcion="${documentos.descripcion}"
                                 data-fecha="${documentos.fechaSubida}"
-                                data-fechacita="${documentos.FechaCita}">
-                                <img src="../img/edit.png" width="35" height="35"></a>
-                            <a href="#" class="delete-btn" data-id="${documentos.idDocumento}">
-                                <img src="../img/delete.png" width="35" height="35">
-                            </a>
+                                data-fechacita="${documentos.FechaCita}"></a>
+                            <a href='#' class='pdf-btn' data-id="${documentos.idDocumento}"></a>
+                            <a href="#" class="delete-btn" data-id="${documentos.idDocumento}"></a>
                         </td>
                     </tr>
                 `;
