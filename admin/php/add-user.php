@@ -46,9 +46,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $idespecialidad = $_POST['idespecialidad'];
         $licenciaMedica = $_POST['licenciaMedica'];
         $aniosExperiencia = $_POST['aniosExperiencia'];
+        $telefonoMedico = $_POST['telefonoMedico'];
         $rol = 'Médico';
 
-        if ($idespecialidad == 0 || empty($licenciaMedica) || empty($aniosExperiencia)) {
+        if ($idespecialidad == 0 || empty($licenciaMedica) || empty($aniosExperiencia) || empty($telefonoMedico)) {
             $_SESSION['error'] = "Complete los campos obligatorios";
             Redirigir($rolPaginaActual);
             exit();
@@ -60,6 +61,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $fechaNacimiento = null;
         $sexo = null;
         $telefono = null;
+        $telefonoMedico = null;
         $rol = 'Administrador';
     } else {
         $_SESSION['error'] = "Seleccione un rol.";
@@ -86,12 +88,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             exit();
         }
 
-        $consulta = "SELECT * FROM Medicos WHERE numerolicenciaMedica = ?";
+        $consulta = "SELECT * FROM Medicos WHERE numerolicenciaMedica = ? OR telefono = ?";
         $statement = $conn->prepare($consulta);
-        $statement->execute([$licenciaMedica]);
+        $statement->execute([$licenciaMedica, $telefonoMedico]);
 
         if ($statement->fetch()) {
-            $_SESSION['error'] = "El número de licencia médica ya está registrado.";
+            $_SESSION['error'] = "El número de licencia médica o el número telefónico ya está registrado.";
             Redirigir($rolPaginaActual);
             exit();
         }
@@ -103,9 +105,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if ($statement->rowCount() > 0) {
             if ($rol == 'Médico') {
                 $idusuario = $conn->lastInsertId();
-                $medico = "INSERT INTO Medicos (idUsuario, idEspecialidad, numerolicenciaMedica, anosExperiencia) VALUES (?,?,?,?)";
+                $medico = "INSERT INTO Medicos (idUsuario, idEspecialidad, numerolicenciaMedica, anosExperiencia, telefono) VALUES (?,?,?,?,?)";
                 $statement = $conn->prepare($medico);
-                $statement->execute([$idusuario, $idespecialidad, $licenciaMedica, $aniosExperiencia]);
+                $statement->execute([$idusuario, $idespecialidad, $licenciaMedica, $aniosExperiencia, $telefonoMedico]);
                 
             } else if ($rol == 'Paciente') {
                 $idusuario = $conn->lastInsertId();

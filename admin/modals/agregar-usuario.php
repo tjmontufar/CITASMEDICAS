@@ -66,6 +66,9 @@
 
                 <label for="add-aniosExperiencia">Años de Experiencia</label>
                 <input id="add-aniosExperiencia" type="text" name="aniosExperiencia" autocomplete="off" value="<?php echo isset($_SESSION['form_data']['aniosExperiencia']) ? $_SESSION['form_data']['aniosExperiencia'] : ''; ?>">
+
+                <label for="add-telefonoMedico">Teléfono</label>
+                <input id="add-telefonoMedico" type="text" name="telefonoMedico" autocomplete="off" value="<?php echo isset($_SESSION['form_data']['telefonoMedico']) ? $_SESSION['form_data']['telefonoMedico'] : ''; ?>">
             </div>
 
             <div class="form-paciente">

@@ -207,6 +207,7 @@ $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <title>Gestión de Citas</title>
     <link rel="stylesheet" href="../css/tabla.css">
     <link rel="stylesheet" href="../css/filter.css">
+    <link rel="stylesheet" href="../css/pdfModal.css">
 </head>
 
 <body>
@@ -362,6 +363,7 @@ $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
     function asignarEventosBotones() {
         const editButtons = document.querySelectorAll(".edit-btn");
         const deleteButtons = document.querySelectorAll(".delete-btn");
+        const pdfButtons = document.querySelectorAll(".pdf-btn");
 
         editButtons.forEach(btn => {
             btn.addEventListener("click", function(event) {
@@ -446,6 +448,61 @@ $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 }
             });
         });
+
+        pdfButtons.forEach(btn => {
+            btn.addEventListener("click", async event => {
+                event.preventDefault();
+                const idDocumento = btn.dataset.id; // Obtiene el ID del documento seleccionado
+
+                try {
+                    const response = await fetch(`pdf/documento-medico.php?id=${idDocumento}`);
+                    const blob = await response.blob();
+                    const url = URL.createObjectURL(blob);
+
+                    // Crear modal si no existe
+                    let modal = document.getElementById("pdfModal");
+                    if (!modal) {
+                        modal = document.createElement("div");
+                        modal.id = "pdfModal";
+                        modal.style.position = "fixed";
+                        modal.style.top = "0";
+                        modal.style.left = "0";
+                        modal.style.width = "100%";
+                        modal.style.height = "100%";
+                        modal.style.backgroundColor = "rgba(0,0,0,0.5)";
+                        modal.style.display = "flex";
+                        modal.style.justifyContent = "center";
+                        modal.style.alignItems = "center";
+                        modal.innerHTML = `
+                    <div style="background: white; padding: 20px; border-radius: 5px; position: relative; width: 85%; height: 90%;">
+                        <span id="closeModal" style="position: absolute; top: 10px; right: 15px; cursor: pointer; font-size: 20px;">✖</span>
+                        <iframe id="pdfViewer" src="" width="100%" height="95%" style="border: none; margin-top: 25px"></iframe>
+                    </div>
+                `;
+                        document.body.appendChild(modal);
+
+                        // Agregar evento de cierre
+                        document.getElementById("closeModal").addEventListener("click", () => {
+                            modal.style.display = "none";
+                            URL.revokeObjectURL(url);
+                        });
+                    }
+
+                    // Mostrar el PDF en el iframe
+                    document.getElementById("pdfViewer").src = url;
+                    modal.style.display = "flex"; // Muestra el modal
+
+                } catch (error) {
+                    console.error("Error:", error);
+                    await Swal.fire({
+                        title: "Error",
+                        text: "Hubo un problema al cargar el documento.",
+                        icon: "error"
+                    });
+                }
+            });
+        });
+
     }
 
     const modals = document.querySelectorAll(".modalAgregarDocumento, .modalEditarDocumento");
