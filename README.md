@@ -84,3 +84,4 @@ Se implementa una mejora en los botones de la tablas que cambian su color a uno 
 --- 27/03/2025 ---
 Se implementa la funcionalidad en la seccion Documentos Medicos para generar reportes pdf que contiene las Recetas y Constancias medicas en una plantilla minimalista y facil de leer.
 Se corrige un error que permitia insercion de duplicados de numeros de Licencias y telefonos al registrar/editar medicos en Administrador.
+Se actualiza el formulario de registro de usuarios y de pacientes donde verifica si el paciente es un niño o menor de edad, el formulario se adapta para registrar unicamente la información del niño y de los tutores.
