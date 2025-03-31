@@ -16,6 +16,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     function Redirigir($rolPaginaActual)
     {
+        ob_clean(); // Limpia el buffer de salida antes de redirigir
         if ($rolPaginaActual == 'Médico') {
             header('Location: ../medicos.php');
         } else if ($rolPaginaActual == 'Paciente') {
@@ -127,14 +128,43 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         // Si el paciente es un adulto, verificar si la edad es menor a 18 años
         if ($esNino == 'no') {
-            $fechaNacimientoObj = new DateTime($fechaNacimiento);
-            $fechaActual = new DateTime(); // Fecha actual
+            if($rol == 'Paciente') {
+                $fechaNacimientoObj = new DateTime($fechaNacimiento);
+                $fechaActual = new DateTime(); // Fecha actual
+    
+                // Calcular la diferencia de años
+                $edad = $fechaNacimientoObj->diff($fechaActual)->y;
+    
+                if ($edad < 18) {
+                    $_SESSION['error'] = "El paciente debe ser mayor de edad.";
+                    Redirigir($rolPaginaActual);
+                    exit();
+                }
+            }
+            
+            $consulta = "INSERT INTO Usuarios (dni, nombre, apellido, usuario, correo, contrasenia, rol) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            $statement = $conn->prepare($consulta);
+            $statement->execute([$dni, $nombre, $apellido, $usuario, $correo, $passwordHash, $rol]);
 
-            // Calcular la diferencia de años
-            $edad = $fechaNacimientoObj->diff($fechaActual)->y;
+            if ($statement->rowCount() > 0) {
+                if ($rol == 'Médico') {
+                    $idusuario = $conn->lastInsertId();
+                    $medico = "INSERT INTO Medicos (idUsuario, idEspecialidad, numerolicenciaMedica, anosExperiencia, telefono) VALUES (?,?,?,?,?)";
+                    $statement = $conn->prepare($medico);
+                    $statement->execute([$idusuario, $idespecialidad, $licenciaMedica, $aniosExperiencia, $telefonoMedico]);
+                } else if ($rol == 'Paciente') {
+                    $idusuario = $conn->lastInsertId();
+                    $paciente = "INSERT INTO Pacientes (idUsuario, fechaNacimiento, sexo, telefono, direccion) VALUES (?,?,?,?,?)";
+                    $statement = $conn->prepare($paciente);
+                    $statement->execute([$idusuario, $fechaNacimiento, $sexo, $telefono, $direccion]);
+                }
 
-            if ($edad < 18) {
-                $_SESSION['error'] = "El paciente debe ser mayor de edad.";
+                $_SESSION['success'] = "Usuario registrado correctamente.";
+                unset($_SESSION['form_data']);
+                Redirigir($rolPaginaActual);
+                exit();
+            } else {
+                $_SESSION['error'] = "Error al registrar el usuario.";
                 Redirigir($rolPaginaActual);
                 exit();
             }
@@ -164,54 +194,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                 if ($idTutor != null) {
                     $idresponsable = $idTutor;
-                    // Verificar si el DNI ya existe en otro tutor
-                    $consulta = "SELECT * FROM Responsables WHERE dni = ? AND idResponsable != ?";
-                    $statement = $conn->prepare($consulta);
-                    $statement->execute([$dniTutor, $idTutor]);
-
-                    if ($statement->fetch()) {
-                        $_SESSION['error'] = "El DNI ya está registrado en otro tutor.";
-                        header('Location: ../pacientes.php');
-                        exit();
-                    }
-                    // Obtener los datos actuales del tutor desde la base de datos
-                    $consulta = "SELECT nombre, dni, telefono FROM Responsables WHERE idResponsable = ?";
-                    $statement = $conn->prepare($consulta);
-                    $statement->execute([$idTutor]);
-                    $tutorActual = $statement->fetch(PDO::FETCH_ASSOC);
-
-                    if ($tutorActual) {
-                        // Verificar si algún campo ha cambiado
-                        $nombreCambiado = ($tutorActual['nombre'] !== $nombreTutor);
-                        $dniCambiado = ($tutorActual['dni'] !== $dniTutor);
-                        $telefonoCambiado = ($tutorActual['telefono'] !== $telefono);
-
-                        // Si hay cambios, actualizar solo los campos modificados
-                        if ($nombreCambiado || $dniCambiado || $telefonoCambiado) {
-                            $updateFields = [];
-                            $params = [];
-
-                            if ($nombreCambiado) {
-                                $updateFields[] = "nombre = ?";
-                                $params[] = $nombreTutor;
-                            }
-                            if ($dniCambiado) {
-                                $updateFields[] = "dni = ?";
-                                $params[] = $dniTutor;
-                            }
-                            if ($telefonoCambiado) {
-                                $updateFields[] = "telefono = ?";
-                                $params[] = $telefono;
-                            }
-
-                            // Construir la consulta dinámica
-                            $params[] = $idTutor;
-                            $updateQuery = "UPDATE Responsables SET " . implode(", ", $updateFields) . " WHERE idResponsable = ?";
-
-                            $statement = $conn->prepare($updateQuery);
-                            $statement->execute($params);
-                        }
-                    }
                 } else {
                     $responsable = "INSERT INTO Responsables (nombre, dni, telefono) VALUES (?,?,?)";
                     $statement = $conn->prepare($responsable);
@@ -229,36 +211,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         unset($_SESSION['form_data']);
                         Redirigir($rolPaginaActual);
                         exit();
+                    } else {
+                        $_SESSION['error'] = "Error al registrar el paciente: " . $statement->errorInfo()[2];
+                        Redirigir($rolPaginaActual);
+                        exit();
                     }
+                } else {
+                    $_SESSION['error'] = "Error al registrar/editar el tutor: " . $idresponsable;
+                    Redirigir($rolPaginaActual);
+                    exit();
                 }
             }
-        }
-
-        $consulta = "INSERT INTO Usuarios (dni, nombre, apellido, usuario, correo, contrasenia, rol) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        $statement = $conn->prepare($consulta);
-        $statement->execute([$dni, $nombre, $apellido, $usuario, $correo, $passwordHash, $rol]);
-
-        if ($statement->rowCount() > 0) {
-            if ($rol == 'Médico') {
-                $idusuario = $conn->lastInsertId();
-                $medico = "INSERT INTO Medicos (idUsuario, idEspecialidad, numerolicenciaMedica, anosExperiencia, telefono) VALUES (?,?,?,?,?)";
-                $statement = $conn->prepare($medico);
-                $statement->execute([$idusuario, $idespecialidad, $licenciaMedica, $aniosExperiencia, $telefonoMedico]);
-            } else if ($rol == 'Paciente') {
-                $idusuario = $conn->lastInsertId();
-                $paciente = "INSERT INTO Pacientes (idUsuario, fechaNacimiento, sexo, telefono, direccion) VALUES (?,?,?,?,?)";
-                $statement = $conn->prepare($paciente);
-                $statement->execute([$idusuario, $fechaNacimiento, $sexo, $telefono, $direccion]);
-            }
-
-            $_SESSION['success'] = "Usuario registrado correctamente.";
-            unset($_SESSION['form_data']);
-            Redirigir($rolPaginaActual);
-            exit();
-        } else {
-            $_SESSION['error'] = "Error al registrar el usuario.";
-            Redirigir($rolPaginaActual);
-            exit();
         }
     } catch (Exception $e) {
         $_SESSION['error'] = "Error en la base de datos: " . $e->getMessage();

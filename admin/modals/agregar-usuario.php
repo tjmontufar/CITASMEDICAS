@@ -143,11 +143,11 @@
                         <div id="suggestionAgregar" class="suggestions"></div>
                     </div>
 
-                    <label for="add-idTutor" >ID del Tutor</label>
-                    <input id="add-idTutor"  type="text" name="idTutor" autocomplete="off" value="<?php echo isset($_SESSION['form_data']['idTutor']) ? $_SESSION['form_data']['idTutor'] : ''; ?>">
+                    <label for="add-idTutor" hidden>ID del Tutor</label>
+                    <input id="add-idTutor" hidden type="text" name="idTutor" autocomplete="off" value="<?php echo isset($_SESSION['form_data']['idTutor']) ? $_SESSION['form_data']['idTutor'] : ''; ?>" readonly="true">
 
                     <label for="add-dniTutor">DNI del Tutor</label>
-                    <input id="add-dniTutor" type="text" name="dniTutor" autocomplete="off" value="<?php echo isset($_SESSION['form_data']['dniTutor']) ? $_SESSION['form_data']['dniTutor'] : ''; ?>">
+                    <input id="add-dniTutor" type="text" name="dniTutor" autocomplete="off" value="<?php echo isset($_SESSION['form_data']['dniTutor']) ? $_SESSION['form_data']['dniTutor'] : ''; ?>" readonly="true">
                 </div>
 
                 <label for="add-telefono">Teléfono</label>

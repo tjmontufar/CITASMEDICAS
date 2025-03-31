@@ -6,9 +6,12 @@ $nombre_apellido_filter = $_GET['nombre_apellido'] ?? '';
 $sexo_filter = $_GET['sexo'] ?? '';
 
 $sql = "SELECT
-T1.idUsuario, T1.idPaciente, T2.dni, T2.nombre, T2.apellido, T1.sexo, CONVERT(VARCHAR, T1.fechaNacimiento, 23) AS FechaNacimiento, T1.telefono, T1.direccion
-FROM Pacientes T1
-INNER JOIN Usuarios T2 ON T2.idUsuario = T1.idUsuario WHERE 1=1";
+        T1.idUsuario, T1.idPaciente, T2.dni, T2.nombre, T2.apellido, T1.sexo, 
+        CONVERT(VARCHAR, T1.fechaNacimiento, 23) AS FechaNacimiento, 
+        ISNULL(T1.telefono,'-') AS telefono, 
+        T1.direccion
+        FROM Pacientes T1
+        INNER JOIN Usuarios T2 ON T2.idUsuario = T1.idUsuario WHERE 1=1";
 
 if ($dni_filter) {
     $sql .= " AND T2.dni LIKE '%$dni_filter%'";
@@ -68,7 +71,6 @@ if (isset($_GET['ajax'])) {
                 <h2>TABLA DE PACIENTES</h2>
                 <div class="encabezado">
                     <a href="#" class="add-btn">Agregar Paciente</a>
-                    <a href="#" class="tutores-btn">Consultar Tutores</a>
                 </div>
                 <div class="table-responsive">
                     <table>
