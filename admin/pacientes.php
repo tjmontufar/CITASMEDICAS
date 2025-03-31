@@ -67,7 +67,8 @@ if (isset($_GET['ajax'])) {
             <div class="table-container">
                 <h2>TABLA DE PACIENTES</h2>
                 <div class="encabezado">
-                    <a href="#" class="add-btn">Agregar Usuario</a>
+                    <a href="#" class="add-btn">Agregar Paciente</a>
+                    <a href="#" class="tutores-btn">Consultar Tutores</a>
                 </div>
                 <div class="table-responsive">
                     <table>
@@ -208,6 +209,39 @@ if (isset($_GET['ajax'])) {
                 document.getElementById("edit-fechaNacimiento").value = this.dataset.fechanacimiento;
                 document.getElementById("edit-telefono").value = this.dataset.telefono;
                 document.getElementById("edit-direccion").value = this.dataset.direccion;
+
+                const edad = calcularEdad(this.dataset.fechanacimiento);
+                if(edad < 18) {
+                    document.getElementById("camposTutorEditar").style.display = "contents";
+                    const idPaciente = this.dataset.idpaciente;
+
+                    fetch("php/buscarTutorPorPaciente.php", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/x-www-form-urlencoded"
+                        },
+                        body: `idPaciente=${idPaciente}`
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if(data.length > 0) {
+                            const tutor = data[0];
+                            document.getElementById("edit-nombreTutor").value = tutor.Tutor;
+                            document.getElementById("edit-dniTutor").value = tutor.dni;
+                            document.getElementById("edit-telefono").value = tutor.telefono;
+                            document.getElementById("edit-idTutor").value = tutor.idResponsable;
+                        } else {
+                            document.getElementById("edit-nombreTutor").value = "";
+                            document.getElementById("edit-dniTutor").value = "";
+                            document.getElementById("edit-telefono").value = "";
+                            document.getElementById("edit-idTutor").value = "";
+                        }
+                    })
+                    .catch(error => console.error("Error al buscar un tutor:", error));
+
+                } else {
+                    document.getElementById("camposTutorEditar").style.display = "none";
+                }
                 modalEditarPaciente.style.display = "block";
             });
         });
@@ -281,6 +315,19 @@ if (isset($_GET['ajax'])) {
             }
         });
     };
+
+    function calcularEdad(fechaNacimiento) {
+        let nacimiento = new Date(fechaNacimiento);
+        let hoy = new Date();
+        let edad = hoy.getFullYear() - nacimiento.getFullYear();
+        let mes = hoy.getMonth() - nacimiento.getMonth();
+
+        if (mes < 0 || (mes === 0 && hoy.getDate() < nacimiento.getDate())) {
+            edad--;
+        }
+
+        return edad;
+    }
 </script>
 
 </html>

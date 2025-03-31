@@ -85,3 +85,6 @@ Se implementa una mejora en los botones de la tablas que cambian su color a uno 
 Se implementa la funcionalidad en la seccion Documentos Medicos para generar reportes pdf que contiene las Recetas y Constancias medicas en una plantilla minimalista y facil de leer.
 Se corrige un error que permitia insercion de duplicados de numeros de Licencias y telefonos al registrar/editar medicos en Administrador.
 Se actualiza el formulario de registro de usuarios y de pacientes donde verifica si el paciente es un niño o menor de edad, el formulario se adapta para registrar unicamente la información del niño y de los tutores.
+
+--- 30/03/2025 ---
+Se actualiza el formulario de registros de usuario donde se completa la funcionalidad que permite registrar un paciente menor de edad y permite también verificar/actualizar los datos del paciente menor de edad en el sistema. Se corrige un error que permitía registrar pacientes mayores de edad con una edad menor a 18 años y viceversa.

@@ -70,7 +70,7 @@ form .title {
     align-items: start;
 }
 
-#camposUsuario, #camposTutor, #camposNino {
+#camposUsuario, #camposTutor, #camposTutorEditar, #camposNino {
     display: contents; /* Mantiene la estructura grid del padre */
 }
 
