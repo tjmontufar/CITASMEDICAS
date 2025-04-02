@@ -89,3 +89,6 @@ Se actualiza el formulario de registro de usuarios y de pacientes donde verifica
 --- 30/03/2025 ---
 Se actualiza el formulario de registros de usuario donde se completa la funcionalidad que permite registrar un paciente menor de edad y permite también verificar/actualizar los datos del paciente menor de edad en el sistema. Se corrige un error que permitía registrar pacientes mayores de edad con una edad menor a 18 años y viceversa.
 Se corrige un error que creaba duplicados de registros de Usuarios mientras se inserta un paciente infantil.
+
+--- 01/04/2025 ---
+Se desarrolla la tabla de financiamientos que muestra los pagos realizados en el sistema, se crea la funcion de agregar Pagos en el sistema.
