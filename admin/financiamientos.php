@@ -167,9 +167,8 @@ if (isset($_GET['ajax'])) {
                                 data-idpago="${pagos.idPago}"
                                 data-idcita="${pagos.idCita}"
                                 data-fecha="${pagos.fecha}"
-                                data-paciente="${pagos.paciente}"
+                                data-paciente="${pagos.Paciente}"
                                 data-dnipaciente="${pagos.dniPaciente}"
-                                data-medico="${pagos.medico}"
                                 data-monto="${pagos.monto}"
                                 data-metodoPago="${pagos.metodoPago}"
                                 data-fechaPago="${pagos.fechaPago}"></a>

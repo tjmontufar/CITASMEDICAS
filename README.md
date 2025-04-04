@@ -92,3 +92,6 @@ Se corrige un error que creaba duplicados de registros de Usuarios mientras se i
 
 --- 01/04/2025 ---
 Se desarrolla la tabla de financiamientos que muestra los pagos realizados en el sistema, se crea la funcion de agregar Pagos en el sistema.
+
+--- 04/04/2025 ---
+Se desarrolla en el modulo de pacientes la seccion para la reserva de citas, donde se implementan las primeras secciones de codigo necesarias para la insercion de reserva de citas, todavia en desarrollo.

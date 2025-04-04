@@ -1,60 +1,105 @@
 <?php
-session_start();
-include '../conexion.php';
+header('Content-Type: application/json');
+require_once '../conexion.php';
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $dni = $_POST["dni"];
-    $motivo = trim($_POST["motivo"]);
-    $idMedico = $_POST["medico"];
-    $idHorario = $_POST["horario"];
-    $hora = $_POST["hora"];
-    $estado = "pendiente";
+// Recibir datos POST
+$dni = $_POST['dni'] ?? '';
+$motivo = $_POST['motivo'] ?? '';
+$id_medico = $_POST['idmedico'] ?? '';
+$id_horario = $_POST['idhorario'] ?? '';
+$horallegada = $_POST['horallegada'] ?? '';
+$fecha = $_POST['fecha'] ?? '';
+$duracion = $_POST['duracion'] ?? 60;
 
-    if (empty($dni)) {
-        echo "error: DNI no proporcionado.";
-        exit;
+try {
+    // Validar parámetros obligatorios
+    if (empty($dni) || empty($motivo) || empty($id_medico) || empty($id_horario) || empty($horallegada) || empty($fecha)) {
+        throw new Exception('Parámetros requeridos faltantes.');
     }
 
-    try {
-        $sqlUsuario = "SELECT idUsuario FROM Usuarios WHERE dni = :dni";
-        $stmtUsuario = $conn->prepare($sqlUsuario);
-        $stmtUsuario->bindParam(":dni", $dni);
-        $stmtUsuario->execute();
-        $usuario = $stmtUsuario->fetch(PDO::FETCH_ASSOC);
-
-        if ($usuario) {
-            $idUsuario = $usuario['idUsuario'];
-            $sqlPaciente = "SELECT idPaciente FROM Pacientes WHERE idUsuario = :idUsuario";
-            $stmtPaciente = $conn->prepare($sqlPaciente);
-            $stmtPaciente->bindParam(":idUsuario", $idUsuario);
-            $stmtPaciente->execute();
-            $paciente = $stmtPaciente->fetch(PDO::FETCH_ASSOC);
-
-            if ($paciente) {
-                $idPaciente = $paciente['idPaciente'];
-
-                $sql = "INSERT INTO Citas (idPaciente, idMedico, hora, motivo, estado, idHorario) 
-                        VALUES (:idPaciente, :idMedico, :hora, :motivo, :estado, :idHorario)";
-                $stmt = $conn->prepare($sql);
-                $stmt->bindParam(":idPaciente", $idPaciente);
-                $stmt->bindParam(":idMedico", $idMedico);
-                $stmt->bindParam(":hora", $hora);
-                $stmt->bindParam(":motivo", $motivo);
-                $stmt->bindParam(":estado", $estado);
-                $stmt->bindParam(":idHorario", $idHorario);
-
-                if ($stmt->execute()) {
-                    echo "success";
-                } else {
-                    echo "error: No se pudo insertar la cita.";
-                }
-            } else {
-                echo "error: No se encontró un paciente asociado al DNI proporcionado.";
-            }
-        } else {
-            echo "error: No se encontró un usuario con el DNI proporcionado.";
-        }
-    } catch (Exception $e) {
-        echo "error: " . $e->getMessage();
+    // Validar formato de DNI
+    if (!preg_match('/^\d{8,13}$/', $dni)) {
+        throw new Exception('DNI inválido. Debe contener entre 8 y 13 dígitos.');
     }
+
+    // Validar duración
+    $duracion = is_numeric($duracion) ? (int)$duracion : 60;
+    if ($duracion <= 0) {
+        throw new Exception('Duración inválida.');
+    }
+
+    // Validar fecha
+    if (!DateTime::createFromFormat('Y-m-d', $fecha)) {
+        throw new Exception('Formato de fecha inválido.');
+    }
+
+    // Obtener idPaciente con transacción
+    $conn->beginTransaction();
+    
+    $stmt = $conn->prepare("SELECT idPaciente FROM Pacientes WHERE dni = ?");
+    $stmt->execute([$dni]);
+    $paciente = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+    if (!$paciente) {
+        throw new Exception("No se encontró el paciente con DNI proporcionado.");
+    }
+    
+    $id_paciente = $paciente['idPaciente'];
+    
+    // Verificar disponibilidad nuevamente (evitar condiciones de carrera)
+    $stmt = $conn->prepare("
+        SELECT 1 FROM HorariosMedicos 
+        WHERE idHorario = ? 
+        AND (cupos IS NULL OR cupos > 0)
+        FOR UPDATE
+    ");
+    $stmt->execute([$id_horario]);
+    if (!$stmt->fetch()) {
+        throw new Exception("El horario seleccionado ya no está disponible.");
+    }
+
+    // Insertar cita
+    $stmt = $conn->prepare("
+        INSERT INTO Citas (idPaciente, idMedico, hora, motivo, estado, idHorario, duracion, fecha)
+        VALUES (?, ?, ?, ?, 'pendiente', ?, ?, ?)
+    ");
+    $stmt->execute([
+        $id_paciente,
+        $id_medico,
+        $horallegada,
+        $motivo,
+        $id_horario,
+        $duracion,
+        $fecha
+    ]);
+    
+    // Actualizar cupos en horario si es necesario
+    $stmt = $conn->prepare("
+        UPDATE HorariosMedicos 
+        SET cupos = GREATEST(cupos - 1, 0) 
+        WHERE idHorario = ? AND (cupos IS NOT NULL)
+    ");
+    $stmt->execute([$id_horario]);
+    
+    $conn->commit();
+    
+    echo json_encode([
+        'estado' => 'exito',
+        'mensaje' => 'Cita registrada correctamente.'
+    ]);
+    
+} catch (PDOException $e) {
+    $conn->rollBack();
+    error_log('Error al registrar cita: ' . $e->getMessage());
+    echo json_encode([
+        'estado' => 'error',
+        'mensaje' => 'Error al registrar cita: ' . $e->getMessage()
+    ]);
+} catch (Exception $e) {
+    $conn->rollBack();
+    echo json_encode([
+        'estado' => 'error',
+        'mensaje' => $e->getMessage()
+    ]);
 }
+?>

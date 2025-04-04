@@ -30,11 +30,11 @@ if (isset($_POST['fecha']) && isset($_POST['especialidad'])) {
     JOIN Medicos u ON h.idMedico = u.idMedico
     JOIN Usuarios b ON b.idUsuario = u.idUsuario
     JOIN Especialidades e ON e.idEspecialidad = u.idEspecialidad
-    WHERE h.diaSemana = :diaSemana AND e.nombreEspecialidad = :especialidad
+    WHERE h.fecha = :fecha AND e.nombreEspecialidad = :especialidad
     ";
 
     $consulta = $conn->prepare($sql);
-    $consulta->bindParam(':diaSemana', $diaSemana);
+    $consulta->bindParam(':fecha', $fecha);
     $consulta->bindParam(':especialidad', $especialidad);
     $consulta->execute();
 
@@ -46,13 +46,13 @@ if (isset($_POST['fecha']) && isset($_POST['especialidad'])) {
             $horaFin = date("H:i", strtotime($horario['horaFin']));
 
             echo "<tr>
-                    <td>" . $horario['horaInicio'] . "</td>
-                    <td>" . $horario['horaFin'] . "</td>
+                    <td>" . $horario['horaInicio'] . " - " . $horario['horaFin'] . "</td>
+                    <td>" . 60 . " minutos</td>
                     <td>" . $horario['nombreMedico'] . " " . $horario['apellidoMedico'] . "</td>
                     <td>
-                        <button class='btn-horario' 
-                                data-horario='" . $horario['idHorario'] . "' 
-                                data-medico='" . $horario['idMedico'] . "' 
+                        <button class='btn-reservar' 
+                                data-idhorario='" . $horario['idHorario'] . "' 
+                                data-idmedico='" . $horario['idMedico'] . "' 
                                 data-hora='" . $horaInicio . "'>
                             Seleccionar
                         </button>
