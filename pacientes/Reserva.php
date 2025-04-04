@@ -294,12 +294,11 @@ EOT;
                 data: {
                     fecha: fechaSeleccionada,
                     hora_inicio: botonSeleccionado.data('hora-inicio'),
-                    id_medico: botonSeleccionado.data('id-medico'),
-                    id_horario: botonSeleccionado.data('id-horario')
+                    id_medico: botonSeleccionado.data('idmedico'),
+                    id_horario: botonSeleccionado.data('idhorario')
                 },
                 success: function(response) {
                     Swal.close();
-                    
                     if(!response.disponible) {
                         Swal.fire({
                             icon: 'error',
@@ -331,7 +330,7 @@ EOT;
                 html: `<div style="text-align:left;">
                     <p><strong>Fecha:</strong> ${fechaSeleccionada}</p>
                     <p><strong>Hora:</strong> ${botonSeleccionado.data('hora-inicio')}</p>
-                    <p><strong>Médico:</strong> ${$('#medico-seleccionado').text()}</p>
+                    <p><strong>Médico:</strong> ${botonSeleccionado.data('nombremedico')}</p>
                     <p><strong>DNI:</strong> ${dni}</p>
                     <p><strong>Motivo:</strong> ${motivo}</p>
                 </div>`,
@@ -349,8 +348,8 @@ EOT;
                             data: {
                                 dni: dni,
                                 motivo: motivo,
-                                id_medico: botonSeleccionado.data('id-medico'),
-                                id_horario: botonSeleccionado.data('id-horario'),
+                                id_medico: botonSeleccionado.data('idmedico'),
+                                id_horario: botonSeleccionado.data('idhorario'),
                                 hora_inicio: botonSeleccionado.data('hora-inicio'),
                                 fecha: fechaSeleccionada,
                                 duracion: 60
@@ -358,20 +357,22 @@ EOT;
                             success: function(response) {
                                 if(response.estado === 'exito') {
                                     // Enviar correo de confirmación
-                                    enviarCorreoConfirmacion(dni, fechaSeleccionada, 
-                                        botonSeleccionado.data('hora-inicio'), 
-                                        $('#medico-seleccionado').text(), motivo)
-                                    .then(() => resolve())
-                                    .catch(() => {
-                                        Swal.showValidationMessage('Cita confirmada pero error al enviar correo');
-                                        resolve(); // Resolver igual para no bloquear
-                                    });
+                                    // enviarCorreoConfirmacion(dni, fechaSeleccionada, 
+                                    //     botonSeleccionado.data('hora-inicio'), 
+                                    //     botonSeleccionado.data('nombremedico'), 
+                                    //     motivo)
+                                    // .then(() => resolve())
+                                    // .catch(() => {
+                                    //     Swal.showValidationMessage('Cita confirmada pero error al enviar correo');
+                                    //     resolve(); // Resolver igual para no bloquear
+                                    // });
                                 } else {
                                     Swal.showValidationMessage(response.mensaje || 'Error al confirmar la cita');
                                 }
                             },
                             error: function(xhr, status, error) {
                                 Swal.showValidationMessage('Error al conectar con el servidor: ' + error);
+                                console.log(xhr, status, error);
                             }
                         });
                     });

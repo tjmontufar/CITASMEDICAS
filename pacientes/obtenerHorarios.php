@@ -23,8 +23,7 @@ if (isset($_POST['fecha']) && isset($_POST['especialidad'])) {
         h.idHorario, 
         CONVERT(VARCHAR(5), h.horaInicio, 108) AS horaInicio, 
         CONVERT(VARCHAR(5), h.horaFin, 108) AS horaFin, 
-        b.nombre AS nombreMedico,
-        b.apellido AS apellidoMedico,
+        CONCAT(b.nombre, ' ', b.apellido) AS nombreMedico,
         u.idMedico
     FROM HorariosMedicos h
     JOIN Medicos u ON h.idMedico = u.idMedico
@@ -48,12 +47,13 @@ if (isset($_POST['fecha']) && isset($_POST['especialidad'])) {
             echo "<tr>
                     <td>" . $horario['horaInicio'] . " - " . $horario['horaFin'] . "</td>
                     <td>" . 60 . " minutos</td>
-                    <td>" . $horario['nombreMedico'] . " " . $horario['apellidoMedico'] . "</td>
+                    <td>" . $horario['nombreMedico'] . "</td>
                     <td>
                         <button class='btn-reservar' 
                                 data-idhorario='" . $horario['idHorario'] . "' 
-                                data-idmedico='" . $horario['idMedico'] . "' 
-                                data-hora='" . $horaInicio . "'>
+                                data-idmedico='" . $horario['idMedico'] . "'
+                                data-nombremedico='" . $horario['nombreMedico'] . "' 
+                                data-hora-inicio='" . $horaInicio . "'>
                             Seleccionar
                         </button>
                     </td>
