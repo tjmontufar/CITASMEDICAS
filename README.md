@@ -98,3 +98,6 @@ Se desarrolla en el modulo de pacientes la seccion para la reserva de citas, don
 Se corrigen algunos errores que impedian el funcionamiento correcto para verificar la disponibilidad del horario medico y al Insertar Citas, incluye correccion de algunas consultas y parametros mal definidos.
 Se corrige un error importante que no verificaba correctamente si la cita ocupaba la misma fecha y hora respecto a otra cita ya registrada.
 Se implementa la tabla de Auditoria para registrar los cambios realizados en el sistema.
+
+--- 05/04/2025 ---
+Correccion de errores al exportar reportes en el modulo de medicos y mejoras en las pantallas de inicio para Medicos y Administrador.

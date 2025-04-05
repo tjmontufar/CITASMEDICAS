@@ -14,9 +14,12 @@ $sexo_filter = $_GET['sexo'] ?? '';
 $paginaActual = 'pacientes';
 
 $sql = "SELECT
-T1.idPaciente, T2.dni, T2.nombre, T2.apellido, T1.sexo, T1.fechaNacimiento, T1.telefono, T1.direccion
-FROM Pacientes T1
-INNER JOIN Usuarios T2 ON T2.idUsuario = T1.idUsuario WHERE 1=1";
+        T1.idUsuario, T1.idPaciente, T2.dni, T2.nombre, T2.apellido, T1.sexo, 
+        CONVERT(VARCHAR, T1.fechaNacimiento, 23) AS fechaNacimiento, 
+        ISNULL(T1.telefono,'-') AS telefono, 
+        T1.direccion
+        FROM Pacientes T1
+        INNER JOIN Usuarios T2 ON T2.idUsuario = T1.idUsuario WHERE 1=1";
 
 if ($dni_filter) {
     $sql .= " AND T2.dni LIKE '%$dni_filter%'";

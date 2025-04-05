@@ -48,14 +48,7 @@
             </a>
         </section>
 
-        <section id="contacto" class="container">
-            <h2>Contáctanos</h2>
-            <p>Ubicación: Santa Bárbara, Honduras</p>
-            <p>Contáctanos Por WhatsApp:</p>
-            <a href="https://wa.me/+50495629127" target="_blank" class="btn-whatsapp">
-                <i class="fab fa-whatsapp"></i> Contactar por WhatsApp
-            </a>
-        </section>
+        
     </main>
     <footer class="footer">
         <p>&copy; 2025 MediCitas - Todos los derechos reservados</p>
