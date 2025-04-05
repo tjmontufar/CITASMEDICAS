@@ -15,7 +15,8 @@
 .modalAgregarCita, .modalEditarCita,
 .modalAgregarHorario, .modalEditarHorario,
 .modalAgregarDocumento, .modalEditarDocumento,
-.modalAgregarPago, .modalEditarPago {
+.modalAgregarPago, .modalEditarPago,
+.modalAgregarExpediente, .modalEditarExpediente {
     display: none; /* Oculto por defecto */
     position: fixed;
     z-index: 1000;

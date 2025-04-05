@@ -336,7 +336,7 @@ EOT;
 
                         // Confirmar reserva
                         confirmarReserva();
-                        
+
                     },
                     error: function(xhr, status, error) {
                         Swal.fire('Error', 'No se pudo verificar la disponibilidad: ' + error, 'error');
@@ -381,16 +381,16 @@ EOT;
                                 },
                                 success: function(response) {
                                     if (response.estado === 'exito') {
-                                        // Enviar correo de confirmación
-                                        // enviarCorreoConfirmacion(dni, fechaSeleccionada,
-                                        //         botonSeleccionado.data('hora-inicio'),
-                                        //         botonSeleccionado.data('nombremedico'),
-                                        //         motivo)
-                                        //     .then(() => resolve())
-                                        //     .catch(() => {
-                                        //         Swal.showValidationMessage('Cita confirmada pero error al enviar correo');
-                                        //         resolve(); // Resolver igual para no bloquear
-                                        //     });
+                                        // Mensaje de confirmacion
+                                        Swal.fire({
+                                            icon: 'success',
+                                            title: '¡Cita enviada correctamente!',
+                                            html: 'Tu cita se encuentra pendiente de confirmación.',
+                                            willClose: () => {
+                                                location.reload();
+                                            }
+                                        });
+
                                     } else {
                                         Swal.showValidationMessage(response.mensaje || 'Error al confirmar la cita');
                                     }
@@ -405,17 +405,7 @@ EOT;
                     allowOutsideClick: () => !Swal.isLoading()
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: '¡Cita confirmada!',
-                            html: 'Tu cita ha sido registrada exitosamente.<br>' +
-                                (result.value === 'mail_error' ?
-                                    '<span style="color:orange;">Nota: Hubo un problema al enviar el correo de confirmación.</span>' :
-                                    'Se ha enviado un correo de confirmación.'),
-                            willClose: () => {
-                                location.reload();
-                            }
-                        });
+
                     }
                 });
             }

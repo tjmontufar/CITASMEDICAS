@@ -97,3 +97,4 @@ Se desarrolla la tabla de financiamientos que muestra los pagos realizados en el
 Se desarrolla en el modulo de pacientes la seccion para la reserva de citas, donde se implementan las primeras secciones de codigo necesarias para la insercion de reserva de citas, todavia en desarrollo.
 Se corrigen algunos errores que impedian el funcionamiento correcto para verificar la disponibilidad del horario medico y al Insertar Citas, incluye correccion de algunas consultas y parametros mal definidos.
 Se corrige un error importante que no verificaba correctamente si la cita ocupaba la misma fecha y hora respecto a otra cita ya registrada.
+Se implementa la tabla de Auditoria para registrar los cambios realizados en el sistema.
