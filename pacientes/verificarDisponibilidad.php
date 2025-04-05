@@ -3,13 +3,13 @@ header('Content-Type: application/json');
 require_once '../conexion.php';
 
 $fecha = $_POST['fecha'] ?? '';
-$hora_inicio = $_POST['hora_inicio'] ?? '';
+$hora_llegada = $_POST['hora_llegada'] ?? '';
 $id_medico = $_POST['id_medico'] ?? '';
 $id_horario = $_POST['id_horario'] ?? '';
 
 try {
     // Validar que los parámetros no estén vacíos
-    if (empty($fecha) || empty($hora_inicio) || empty($id_medico) || empty($id_horario)) {
+    if (empty($fecha) || empty($hora_llegada) || empty($id_medico) || empty($id_horario)) {
         throw new Exception('Parámetros requeridos faltantes. VERIFICAR');
     }
 
@@ -55,70 +55,33 @@ try {
         throw new Exception('El horario ya no está disponible en la programación del médico.');
     }
 
-    // Verificar cupos disponibles
-    if ($horario['cupos'] !== null) {
-        if ($horario['cupos'] <= 0) {
-            $conn->rollBack();
-            throw new Exception('No hay cupos disponibles para este horario.');
-        }
+    // Para horarios sin límite de cupos, verificar que no haya cita a la misma hora
+    $stmt = $conn->prepare("
+            SELECT COUNT(*) as existe 
+            FROM Citas T1
+            INNER JOIN HorariosMedicos T2 ON T2.idHorario = T1.idHorario
+            WHERE 
+                T2.idHorario = ? 
+                AND T2.idMedico = ? 
+                AND (
+                    T2.fecha = ? OR (T2.fecha IS NULL AND T2.diaSemana = ?)
+                )
+                AND T1.hora = ? 
+                AND T1.estado NOT IN ('Cancelada', 'Rechazada')");
 
-        // Verificar la cantidad de citas ya registradas para este horario específico
-        $stmt = $conn->prepare("
-        SELECT COUNT(*) as existe 
-        FROM Citas T1
-        INNER JOIN HorariosMedicos T2 ON T2.idHorario = T1.idHorario
-        WHERE 
-            T2.idHorario = ? 
-            AND T2.idMedico = ? 
-            AND (
-                T2.fecha = ? OR (T2.fecha IS NULL AND T2.diaSemana = ?)
-            )
-            AND T1.hora = ? 
-            AND T1.estado NOT IN ('Cancelada', 'Rechazada')");
+    $stmt->execute([
+        $id_horario,
+        $id_medico,
+        $fecha,
+        $diaSemanaNombre,
+        $hora_llegada
+    ]);
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        $stmt->execute([
-            $id_horario,
-            $id_medico,
-            $fecha,
-            $diaSemanaNombre,
-            $hora_inicio
-        ]);
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if ($result['existe'] >= $horario['cupos']) {
-            $conn->rollBack();
-            throw new Exception('Ya se alcanzó el límite de cupos para este horario.');
-        }
-    } else {
-        // Para horarios sin límite de cupos, verificar que no haya cita a la misma hora
-        $stmt = $conn->prepare("
-        SELECT COUNT(*) as existe 
-        FROM Citas T1
-        INNER JOIN HorariosMedicos T2 ON T2.idHorario = T1.idHorario
-        WHERE 
-            T2.idHorario = ? 
-            AND T2.idMedico = ? 
-            AND (
-                T2.fecha = ? OR (T2.fecha IS NULL AND T2.diaSemana = ?)
-            )
-            AND T1.hora = ? 
-            AND T1.estado NOT IN ('Cancelada', 'Rechazada')");
-
-        $stmt->execute([
-            $id_horario,
-            $id_medico,
-            $fecha,
-            $diaSemanaNombre,
-            $hora_inicio
-        ]);
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if ($result['existe'] > 0) {
-            $conn->rollBack();
-            throw new Exception('Ya existe una cita registrada para este horario exacto.');
-        }
+    if ($result['existe'] > 0) {
+        $conn->rollBack();
+        throw new Exception('Ya existe una cita registrada para este horario exacto.');
     }
-
 
     $conn->commit();
 
