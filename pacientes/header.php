@@ -22,7 +22,7 @@ include 'session-control.php';
         <div class="logo">MediCitas</div>
         <div class="usuario">
             <span><?php echo "(PACIENTE) " . $_SESSION['usuario']['nombre'] . " " . $_SESSION['usuario']['apellido']; ?></span>
-            <a href="../cerrar-sesion.php" class="btn-salir">Salir</a>
+            <!-- <a href="../cerrar-sesion.php" class="btn-salir">Salir</a> -->
         </div>
     </header>
 </body>

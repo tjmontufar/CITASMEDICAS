@@ -72,7 +72,7 @@ table tr:hover {
 }
 
 .pdf-btn:hover {
-    background: url('../img/pdf-hover.png') no-repeat center/cover;
+    background: url('../img/pdf2-hover.png') no-repeat center/cover;
 }
 
 @media (max-width: 768px) {

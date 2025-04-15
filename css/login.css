@@ -22,6 +22,7 @@ body {
     height: auto;
     display: block;
     margin: 0 auto;
+    margin-bottom: 20px;
 }
 
 
@@ -33,6 +34,14 @@ form {
     padding: 20px 25px;
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
     border-radius: 8px;
+}
+
+.form-group {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 15px;
+    margin-bottom: 20px;
+    align-items: start;
 }
 
 form .title {
@@ -85,6 +94,14 @@ form button {
     cursor: pointer;
     border-radius: 4px;
     font-size: 20px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+form p {
+    color: #252525;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 form button:hover {

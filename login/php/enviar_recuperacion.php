@@ -1,6 +1,7 @@
 <?php
-include '../conexion.php';
+include '../../conexion.php';
 include 'email.php';
+session_start();
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $email = $_POST['email'];
@@ -11,13 +12,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     if ($usuario) {
         $token = bin2hex(random_bytes(16));
-        $url = "http://localhost/CitasMedicas/Pacientes/restablecer_contrasena.php?token=$token";
+        $url = "http://localhost/CitasMedicas/login/restablecer_contrasena.php?token=$token";
 
         $data = [
             'email' => $email,
             'expiracion' => strtotime('+1 hour')
         ];
-        file_put_contents(__DIR__."/tokens/$token.json", json_encode($data));
+        file_put_contents(__DIR__ . '/../tokens/' . $token . '.json', json_encode($data));
 
         $asunto = "Recuperación de contraseña MediCitas";
         $mensaje = "<h3>Recupera tu contraseña</h3>
@@ -26,7 +27,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         enviarEmail($email, $asunto, $mensaje);
 
-        echo "<script>alert('Enlace enviado a tu correo.'); window.location='index.php';</script>";
+        //echo "<script>alert('Enlace enviado a tu correo.'); window.location='index.php';</script>";
+        $_SESSION['success'] = "Enlace enviado a tu correo.";
+        header('Location: ../recuperar_contrasena.php');
+        exit();
+
     } else {
         echo "<script>alert('Correo no encontrado.'); window.location='recuperar_contrasena.php';</script>";
     }

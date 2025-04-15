@@ -104,3 +104,6 @@ Correccion de errores al exportar reportes en el modulo de medicos y mejoras en 
 
 --- 14/04/2025 ---
 Se corrige una consistencia que permitia al medico ver los horarios de otros medicos y se retocan algunos estilos en el sistema.
+
+--- 15/04/2025 ---
+Se mejora la interfaz de recuperacion de contraseña y se ordena los archivos de la carpeta Login.

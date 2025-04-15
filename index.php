@@ -28,12 +28,18 @@
         </section>
 
         <section id="servicios" class="container">
-            <h2>Nuestros Servicios</h2>
+            <h2>Nuestras Especialidades</h2>
             <ul>
-                <li>Consulta general</li>
-                <li>Especialidades médicas </li>
-                <li>Exámenes de laboratorio</li>
-                <li>Y más...</li>
+                <?php 
+                include 'conexion.php';
+                $sql = "SELECT nombreEspecialidad FROM especialidades";
+                $resultado = $conn->prepare($sql);
+                $resultado->execute();
+                $especialidades = $resultado->fetchAll(PDO::FETCH_ASSOC);
+                foreach ($especialidades as $especialidad) {
+                    echo "<li>" . htmlspecialchars($especialidad['nombreEspecialidad']) . "</li>";
+                }
+                ?>
             </ul>
         </section>
 

@@ -255,7 +255,6 @@ $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <th>Paciente</th>
                                 <th>Médico</th>
                                 <th>Tipo</th>
-                                <th>Descripción</th>
                                 <th>Fecha Subida</th>
                                 <th>Acción</th>
                             </tr>
@@ -270,7 +269,6 @@ $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                         <td>{$fila['paciente']}</td>
                                         <td>{$fila['medico']}</td>
                                         <td>{$fila['tipoDocumento']}</td>
-                                        <td>{$fila['descripcion']}</td>
                                         <td>{$fila['fechaSubida']}</td>
                                         <td>
                                             <a href='#' class='edit-btn' 
@@ -485,7 +483,7 @@ $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         modal.style.justifyContent = "center";
                         modal.style.alignItems = "center";
                         modal.innerHTML = `
-                    <div style="background: white; padding: 20px; border-radius: 5px; position: relative; width: 85%; height: 90%;">
+                    <div style="background: white; padding: 20px; border-radius: 5px; position: relative; width: 90%; height: 90%;">
                         <span id="closeModal" style="position: absolute; top: 10px; right: 15px; cursor: pointer; font-size: 20px;">✖</span>
                         <iframe id="pdfViewer" src="" width="100%" height="95%" style="border: none; margin-top: 25px"></iframe>
                     </div>

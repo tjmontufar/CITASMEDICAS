@@ -2,8 +2,9 @@
 session_start();
 if (isset($_SESSION['usuario'])) {
     if ($_SESSION['usuario']['rol'] != "Médico") {
-        header('Location: ../principal/');
+        header('Location: ../');
     }
 } else {
-    header('Location: ../principal/');
+    header('Location: ../');
 }
+?>

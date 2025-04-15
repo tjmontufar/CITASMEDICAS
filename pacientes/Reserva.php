@@ -1,5 +1,5 @@
 <?php
-require_once 'session-control.php';
+include 'session-control.php';
 if (isset($_SESSION['alert_message'])) {
     $alertType = $_SESSION['alert_type'];
     $alertMessage = addslashes($_SESSION['alert_message']);

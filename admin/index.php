@@ -80,52 +80,9 @@ try {
         font-weight: bold;
     }
 
-    .usuario {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-    }
-
-    .usuario img {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-    }
-
     .contenedor-principal {
         display: flex;
         flex: 1;
-    }
-
-    .menu {
-        width: 250px;
-        background-color: #2c3e50;
-        color: white;
-        padding: 1rem;
-    }
-
-    .menu ul {
-        list-style: none;
-    }
-
-    .menu li {
-        padding: 0.5rem;
-        margin: 0.5rem 0;
-        cursor: pointer;
-        border-radius: 5px;
-        transition: background-color 0.3s;
-    }
-
-    .menu li:hover {
-        background-color: #34495e;
-    }
-
-    .menu a {
-        color: white;
-        text-decoration: none;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
     }
 
     .contenido {
@@ -137,6 +94,7 @@ try {
         color: #2c3e50;
         text-align: center;
         margin-bottom: 2rem;
+        margin-top: 1rem;
     }
 
     .bienvenida {
