@@ -70,11 +70,19 @@
                 <label for="edit-diaSemana">Día</label>
                 <input id="edit-diaSemana" type="text" name="diaSemana" readonly>
 
-                <label for="edit-hora">Hora Inicio</label>
-                <input id="edit-hora" type="time" name="horaInicio">
+                <label for="edit-horainicio">Hora Inicio</label>
+                <select id="edit-horainicio" name="horaInicio">
+                    <option value="" selected>Seleccionar</option>
+                    <?php formatoHora(); ?>
+                </select>
+                <!-- <input id="edit-hora" type="time" name="horaInicio"> -->
 
-                <label for="edit-fin">Hora Fin</label>
-                <input id="edit-fin" type="time" name="horaFin">
+                <label for="edit-horafin">Hora Fin</label>
+                <select id="edit-horafin" name="horaFin">
+                    <option value="" selected>Seleccionar</option>
+                    <?php formatoHora(); ?>
+                </select>
+                <!-- <input id="edit-fin" type="time" name="horaFin"> -->
 
                 <label for="edit-cupos">Cupos</label>
                 <input id="edit-cupos" type="number" name="cupos">
@@ -128,8 +136,8 @@
                 document.getElementById("edit-buscarmedico").value = this.dataset.nombremedico;
                 document.getElementById("edit-fecha").value = this.dataset.fecha;
                 document.getElementById("edit-diaSemana").value = this.dataset.diasemana;
-                document.getElementById("edit-hora").value = this.dataset.horainicio;
-                document.getElementById("edit-fin").value = this.dataset.horafin;
+                document.getElementById("edit-horainicio").value = this.dataset.horainicio;
+                document.getElementById("edit-horafin").value = this.dataset.horafin;
                 document.getElementById("edit-cupos").value = this.dataset.cupos;
             });
         });

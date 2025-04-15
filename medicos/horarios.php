@@ -1,41 +1,32 @@
-<?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
-require '../php/vendor/autoload.php';
-include '../conexion.php';
-$paginaActual = 'horarios';
-
-
-$mesActual = isset($_GET['mes']) ? $_GET['mes'] : date('m');
-$anioActual = isset($_GET['anio']) ? $_GET['anio'] : date('Y');
-$diasEnMes = cal_days_in_month(CAL_GREGORIAN, $mesActual, $anioActual);
-
-$sqlCupos = "SELECT H.fecha, 
-       SUM(H.cupos) AS cuposDisponibles
-FROM HorariosMedicos H
-LEFT JOIN Citas C 
-    ON H.idHorario = C.idHorario 
-WHERE MONTH(H.fecha) = :mesActual 
-AND YEAR(H.fecha) = :anioActual
-GROUP BY H.fecha;";
-
-$queryCupos = $conn->prepare($sqlCupos);
-$queryCupos->bindParam(':mesActual', $mesActual, PDO::PARAM_INT);
-$queryCupos->bindParam(':anioActual', $anioActual, PDO::PARAM_INT);
-$queryCupos->execute();
-$cuposPorFecha = $queryCupos->fetchAll(PDO::FETCH_ASSOC);
-
-$cuposDisponibles = [];
-foreach ($cuposPorFecha as $row) {
-    $cuposDisponibles[$row['fecha']] = $row['cuposDisponibles'];
-}
-
-?>
-
 <!DOCTYPE html>
 <html lang="es">
-
+<?php
+function formatoHora()
+{
+    for ($hora = 0; $hora < 24; $hora++) {
+        for ($minuto = 0; $minuto < 60; $minuto += 30) {
+            $time = sprintf("%02d:%02d", $hora, $minuto);
+            // PM
+            if ($time >= "12:00" && $time <= "23:30") {
+                if ($time >= "12:00" && $time <= "12:30") {
+                    echo "<option value='$time'>$time PM</option>";
+                } else {
+                    $horaPM = sprintf("%02d:%02d", $hora - 12, $minuto);
+                    echo "<option value='$time'>$horaPM PM</option>";
+                }
+            } else {
+                // AM
+                if ($time >= "00:00" && $time <= "00:30") {
+                    $horaAM = sprintf("%02d:%02d", $hora + 12, $minuto);
+                    echo "<option value='$time'>$horaAM AM</option>";
+                } else {
+                    echo "<option value='$time'>$time AM</option>";
+                }
+            }
+        }
+    }
+}
+?>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -52,7 +43,7 @@ foreach ($cuposPorFecha as $row) {
 
         .calendar-container {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            grid-template-columns: repeat(7, 1fr);
             gap: 10px;
             max-width: 1000px;
             margin: 20px auto;
@@ -118,6 +109,23 @@ foreach ($cuposPorFecha as $row) {
             border: 1px solid #ddd;
         }
 
+        .empty {
+            background-color: transparent;
+            box-shadow: none;
+            cursor: default;
+        }
+
+        .calendar-header {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            max-width: 1000px;
+            margin: 0 auto 10px auto;
+            padding: 0 20px;
+            font-weight: bold;
+            text-align: center;
+            color: #333;
+        }
+
         @media (max-width: 768px) {
             .calendar-container {
                 grid-template-columns: repeat(7, 1fr);
@@ -152,13 +160,51 @@ foreach ($cuposPorFecha as $row) {
 
 <body>
     <?php include 'header.php'; ?>
+    <?php
+    error_reporting(E_ALL);
+    ini_set('display_errors', 1);
+
+    require '../php/vendor/autoload.php';
+    include '../conexion.php';
+    $paginaActual = 'horarios';
+
+
+    $mesActual = isset($_GET['mes']) ? $_GET['mes'] : date('m');
+    $anioActual = isset($_GET['anio']) ? $_GET['anio'] : date('Y');
+    $diasEnMes = cal_days_in_month(CAL_GREGORIAN, $mesActual, $anioActual);
+
+    $sqlCupos = "SELECT H.fecha, 
+                H.cupos AS cuposDisponibles
+                FROM HorariosMedicos H
+                LEFT JOIN Citas C ON H.idHorario = C.idHorario 
+                LEFT JOIN Medicos T2 ON T2.idMedico = H.idMedico
+                LEFT JOIN Usuarios T1 ON T1.idUsuario = T2.idUsuario
+                WHERE MONTH(H.fecha) = :mesActual
+                AND YEAR(H.fecha) = :anioActual
+                AND T1.idUsuario = :idUsuario
+                GROUP BY H.fecha, H.cupos;";
+
+    $queryCupos = $conn->prepare($sqlCupos);
+    $queryCupos->bindParam(':mesActual', $mesActual, PDO::PARAM_INT);
+    $queryCupos->bindParam(':anioActual', $anioActual, PDO::PARAM_INT);
+    $queryCupos->bindParam(':idUsuario', $_SESSION['usuario']['idusuario'], PDO::PARAM_INT);
+    $queryCupos->execute();
+    $cuposPorFecha = $queryCupos->fetchAll(PDO::FETCH_ASSOC);
+
+    $cuposDisponibles = [];
+    foreach ($cuposPorFecha as $row) {
+        $cuposDisponibles[$row['fecha']] = $row['cuposDisponibles'];
+    }
+
+    ?>
     <div class="contenedor">
         <?php include 'menu.php'; ?>
         <?php include 'modals/editar-horario.php'; ?>
         <?php include 'modals/agregar-horario.php'; ?>
+        
         <main class="contenido">
             <div class="schedule-container">
-                <h2>Horarios Médicos</h2>
+                <h2>HORARIOS MÉDICOS</h2>
                 <div class="month-selector">
                     <select id="selectMes" onchange="cargarMes()">
                         <?php for ($m = 1; $m <= 12; $m++) { ?>
@@ -173,8 +219,25 @@ foreach ($cuposPorFecha as $row) {
                         <?php } ?>
                     </select>
                 </div>
+                <div class="calendar-header">
+                    <div>Domingo</div>
+                    <div>Lunes</div>
+                    <div>Martes</div>
+                    <div>Miércoles</div>
+                    <div>Jueves</div>
+                    <div>Viernes</div>
+                    <div>Sábado</div>
+                </div>
                 <div class="calendar-container">
                     <?php
+                    // Calcular en qué día de la semana empieza el mes (0: Domingo, 6: Sábado)
+                    $primerDiaMes = date('w', strtotime("$anioActual-$mesActual-01"));
+
+                    // Insertar días vacíos para alinear correctamente el calendario
+                    for ($i = 0; $i < $primerDiaMes; $i++) {
+                        echo "<div class='empty'></div>";
+                    }
+                    
                     for ($dia = 1; $dia <= $diasEnMes; $dia++) {
                         $fecha = "$anioActual-$mesActual-" . str_pad($dia, 2, "0", STR_PAD_LEFT);
                         $dias = [
@@ -187,6 +250,7 @@ foreach ($cuposPorFecha as $row) {
                             'Saturday' => 'Sábado'
                         ];
                         $diaSemana = $dias[date('l', strtotime($fecha))];
+                        $idUsuario = $_SESSION['usuario']['idusuario'];
                         $cupos = isset($cuposDisponibles[$fecha]) ? $cuposDisponibles[$fecha] : 0;
 
                         if ($cupos > 5) {
@@ -197,7 +261,7 @@ foreach ($cuposPorFecha as $row) {
                             $clase = "unavailable";
                         }
 
-                        $onclick = ($cupos == 0) ? "onclick=\"abrirModalAgregarHorario('$fecha','$diaSemana')\"" : "onclick=\"abrirModalEditarHorario('$fecha','$diaSemana')\"";
+                        $onclick = ($cupos == 0) ? "onclick=\"abrirModalAgregarHorario('$fecha','$diaSemana','$idUsuario')\"" : "onclick=\"abrirModalEditarHorario('$fecha','$diaSemana','$idUsuario')\"";
 
                         echo "<div class='day $clase' $onclick>
                 <h3>$dia</h3>
@@ -227,13 +291,13 @@ foreach ($cuposPorFecha as $row) {
             return;
         }
         modal.style.display = "block";
-        
+
         document.getElementById("add-fecha").value = fecha;
         document.getElementById("add-diaSemana").value = dia;
         btneditar.style.display = "none";
     }
 
-    function abrirModalEditarHorario(fecha, dia) {
+    function abrirModalEditarHorario(fecha, dia, idusuario) {
         const modal = document.getElementById("modalEditarHorario");
 
         if (!modal) {
@@ -247,16 +311,16 @@ foreach ($cuposPorFecha as $row) {
         document.getElementById("edit-buscarmedico").value = "";
         document.getElementById("edit-fecha").value = fecha;
         document.getElementById("edit-diaSemana").value = dia;
-        document.getElementById("edit-hora").value = "";
-        document.getElementById("edit-fin").value = "";
+        document.getElementById("edit-horainicio").value = "";
+        document.getElementById("edit-horafin").value = "";
         document.getElementById("edit-cupos").value = "";
-        obtenerHorariosDisponibles(fecha);
+        obtenerHorariosDisponibles(fecha, idusuario);
         btneditar.style.display = "block";
     }
 
-    function obtenerHorariosDisponibles(fecha) {
+    function obtenerHorariosDisponibles(fecha, idusuario) {
         const xhr = new XMLHttpRequest();
-        xhr.open("GET", "php/obtener-horarios.php?fecha=" + fecha, true);
+        xhr.open("GET", "php/obtener-horarios.php?fecha=" + fecha + "&idUsuario=" + idusuario, true);
         xhr.onreadystatechange = function() {
             if (xhr.readyState === 4 && xhr.status === 200) {
                 const respuesta = JSON.parse(xhr.responseText);

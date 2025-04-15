@@ -101,3 +101,6 @@ Se implementa la tabla de Auditoria para registrar los cambios realizados en el 
 
 --- 05/04/2025 ---
 Correccion de errores al exportar reportes en el modulo de medicos y mejoras en las pantallas de inicio para Medicos y Administrador.
+
+--- 14/04/2025 ---
+Se corrige una consistencia que permitia al medico ver los horarios de otros medicos y se retocan algunos estilos en el sistema.

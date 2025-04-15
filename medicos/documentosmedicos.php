@@ -238,8 +238,8 @@ $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </div>
 
             <div class="table-container">
-                <h2>Documentos Médicos</h2>
-                <div class="export-buttons">
+                <h2>LISTA DE DOCUMENTOS MÉDICOS</h2>
+                <div class="encabezado">
                     <a href="#" class="add-btn">Agregar Documento</a>
                     <a href="?export_pdf" class="btn-pdf">Exportar a PDF</a>
                     <a href="?export_excel" class="btn-excel">Exportar a Excel</a>

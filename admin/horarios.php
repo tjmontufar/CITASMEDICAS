@@ -52,7 +52,7 @@ foreach ($cuposPorFecha as $row) {
 
         .calendar-container {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            grid-template-columns: repeat(7, 1fr);
             gap: 10px;
             max-width: 1000px;
             margin: 20px auto;
@@ -118,6 +118,25 @@ foreach ($cuposPorFecha as $row) {
             border: 1px solid #ddd;
         }
 
+        .empty {
+            background-color: transparent;
+            box-shadow: none;
+            cursor: default;
+        }
+
+        .calendar-header {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            max-width: 1000px;
+            margin: 0 auto 10px auto;
+            padding: 0 20px;
+            font-weight: bold;
+            text-align: center;
+            color: #333;
+        }
+
+
+
         @media (max-width: 768px) {
             .calendar-container {
                 grid-template-columns: repeat(7, 1fr);
@@ -158,7 +177,7 @@ foreach ($cuposPorFecha as $row) {
         <?php include 'modals/agregar-horario.php'; ?>
         <main class="contenido">
             <div class="schedule-container">
-                <h2>Horarios Médicos</h2>
+                <h2>HORARIOS MÉDICOS</h2>
                 <div class="month-selector">
                     <select id="selectMes" onchange="cargarMes()">
                         <?php for ($m = 1; $m <= 12; $m++) { ?>
@@ -173,8 +192,26 @@ foreach ($cuposPorFecha as $row) {
                         <?php } ?>
                     </select>
                 </div>
+                <div class="calendar-header">
+                    <div>Domingo</div>
+                    <div>Lunes</div>
+                    <div>Martes</div>
+                    <div>Miércoles</div>
+                    <div>Jueves</div>
+                    <div>Viernes</div>
+                    <div>Sábado</div>
+                </div>
+
                 <div class="calendar-container">
                     <?php
+                    // Calcular en qué día de la semana empieza el mes (0: Domingo, 6: Sábado)
+                    $primerDiaMes = date('w', strtotime("$anioActual-$mesActual-01"));
+
+                    // Insertar días vacíos para alinear correctamente el calendario
+                    for ($i = 0; $i < $primerDiaMes; $i++) {
+                        echo "<div class='empty'></div>";
+                    }
+
                     for ($dia = 1; $dia <= $diasEnMes; $dia++) {
                         $fecha = "$anioActual-$mesActual-" . str_pad($dia, 2, "0", STR_PAD_LEFT);
                         $dias = [
@@ -227,7 +264,7 @@ foreach ($cuposPorFecha as $row) {
             return;
         }
         modal.style.display = "block";
-        
+
         document.getElementById("add-fecha").value = fecha;
         document.getElementById("add-diaSemana").value = dia;
         btneditar.style.display = "none";

@@ -3,6 +3,7 @@ include '../../conexion.php';
 
 if (isset($_GET['fecha'])) {
     $fecha = $_GET['fecha'];
+    $idUsuario = $_GET['idUsuario'];
 
     // Consulta para obtener los horarios de la fecha seleccionada
     $sql = "SELECT T1.idHorario, T1.fecha, T1.diaSemana, T3.dni AS DNIMedico, T2.idMedico, 
@@ -12,10 +13,12 @@ if (isset($_GET['fecha'])) {
             FROM HorariosMedicos T1
             INNER JOIN Medicos T2 ON T2.idMedico = T1.idMedico
             INNER JOIN Usuarios T3 ON T3.idUsuario = T2.idUsuario
-            WHERE T1.fecha = :fecha";
+            WHERE T1.fecha = :fecha
+            AND T3.idUsuario = :idUsuario";
 
     $stmt = $conn->prepare($sql);
     $stmt->bindParam(':fecha', $fecha);
+    $stmt->bindParam(':idUsuario', $idUsuario);
     $stmt->execute();
     
     $horarios = $stmt->fetchAll(PDO::FETCH_ASSOC);

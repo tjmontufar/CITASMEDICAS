@@ -128,32 +128,52 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         // Si el paciente es un adulto, verificar si la edad es menor a 18 años
         if ($esNino == 'no') {
-            if($rol == 'Paciente') {
+            if ($rol == 'Paciente') {
                 $fechaNacimientoObj = new DateTime($fechaNacimiento);
                 $fechaActual = new DateTime(); // Fecha actual
-    
+
                 // Calcular la diferencia de años
                 $edad = $fechaNacimientoObj->diff($fechaActual)->y;
-    
+
                 if ($edad < 18) {
                     $_SESSION['error'] = "El paciente debe ser mayor de edad.";
                     Redirigir($rolPaginaActual);
                     exit();
                 }
             }
-            
+
             $consulta = "INSERT INTO Usuarios (dni, nombre, apellido, usuario, correo, contrasenia, rol) VALUES (?, ?, ?, ?, ?, ?, ?)";
             $statement = $conn->prepare($consulta);
             $statement->execute([$dni, $nombre, $apellido, $usuario, $correo, $passwordHash, $rol]);
 
             if ($statement->rowCount() > 0) {
                 if ($rol == 'Médico') {
-                    $idusuario = $conn->lastInsertId();
+                    // Obtenemos el ID del usuario recién insertado
+                    $consulta = "SELECT idUsuario FROM Usuarios WHERE usuario = ?";
+                    $statement = $conn->prepare($consulta);
+                    $statement->execute([$usuario]);
+                    $idusuario = $statement->fetchColumn();
+
+                    if (!$idusuario) {
+                        $_SESSION['error'] = "Error al obtener el ID del usuario.";
+                        header('Location: ../registrarse.php');
+                        exit();
+                    }
                     $medico = "INSERT INTO Medicos (idUsuario, idEspecialidad, numerolicenciaMedica, anosExperiencia, telefono) VALUES (?,?,?,?,?)";
                     $statement = $conn->prepare($medico);
                     $statement->execute([$idusuario, $idespecialidad, $licenciaMedica, $aniosExperiencia, $telefonoMedico]);
                 } else if ($rol == 'Paciente') {
-                    $idusuario = $conn->lastInsertId();
+                    // Obtenemos el ID del usuario recién insertado
+                    $consulta = "SELECT idUsuario FROM Usuarios WHERE usuario = ?";
+                    $statement = $conn->prepare($consulta);
+                    $statement->execute([$usuario]);
+                    $idusuario = $statement->fetchColumn();
+
+                    if (!$idusuario) {
+                        $_SESSION['error'] = "Error al obtener el ID del usuario.";
+                        header('Location: ../registrarse.php');
+                        exit();
+                    }
                     $paciente = "INSERT INTO Pacientes (idUsuario, fechaNacimiento, sexo, telefono, direccion) VALUES (?,?,?,?,?)";
                     $statement = $conn->prepare($paciente);
                     $statement->execute([$idusuario, $fechaNacimiento, $sexo, $telefono, $direccion]);

@@ -173,7 +173,7 @@ if (isset($_GET['export_pdf'])) {
 
             <div class="table-container">
                 <h2>LISTA DE CITAS MÉDICAS</h2>
-                <div class="export-buttons">
+                <div class="encabezado">
                     <a href="#" class="add-btn">Agregar Cita</a>
                     <a href="?export_pdf" class="btn-pdf">Exportar a PDF</a>
                 </div>

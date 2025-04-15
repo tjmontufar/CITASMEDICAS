@@ -30,21 +30,22 @@
         background-color: #f0f0f0;
     }
 </style>
+
 <div id="modalAgregarUsuario" class="modalAgregarUsuario">
     <div class="modal-content">
         <span class="close">&times;</span>
         <form action="php/add-user.php" method="POST">
-            <div class="title">Nuevo <?php 
-            if($paginaActual == 'usuarios') {
-                echo 'Usuario';
-            } else if($paginaActual == 'medicos') {
-                echo 'Médico';
-            } else if($paginaActual == 'pacientes') {
-                echo 'Paciente';
-            } else {
-                echo 'Usuario';
-            }
-            ?></div>
+            <div class="title">Nuevo <?php
+                                        if ($paginaActual == 'usuarios') {
+                                            echo 'Usuario';
+                                        } else if ($paginaActual == 'medicos') {
+                                            echo 'Médico';
+                                        } else if ($paginaActual == 'pacientes') {
+                                            echo 'Paciente';
+                                        } else {
+                                            echo 'Usuario';
+                                        }
+                                        ?></div>
             <div class="form-group">
                 <label for="add-dni">DNI</label>
                 <input id="add-dni" type="text" name="dni" autocomplete="off" value="<?php echo isset($_SESSION['form_data']['dni']) ? $_SESSION['form_data']['dni'] : ''; ?>">
@@ -56,7 +57,7 @@
                 <input id="add-apellido" type="text" name="apellido" autocomplete="off" value="<?php echo isset($_SESSION['form_data']['apellido']) ? $_SESSION['form_data']['apellido'] : ''; ?>">
 
                 <div id="camposNino">
-                    <label for="es-nino">¿Es un paciente niño?</label>
+                    <label for="es-nino">¿Es un menor de edad?</label>
                     <select id="es-nino" name="esNino">
                         <option value="no" <?= (isset($_SESSION['form_data']['esNino']) && $_SESSION['form_data']['esNino'] == 'no') ? 'selected' : '' ?>>No</option>
                         <option value="si" <?= (isset($_SESSION['form_data']['esNino']) && $_SESSION['form_data']['esNino'] == 'si') ? 'selected' : '' ?>>Sí</option>
@@ -156,17 +157,21 @@
                 <label for="add-direccion">Dirección (opcional)</label>
                 <input id="add-direccion" type="text" name="direccion" autocomplete="off" value="<?php echo isset($_SESSION['form_data']['direccion']) ? $_SESSION['form_data']['direccion'] : ''; ?>">
             </div>
-            <button type="submit" class="modificar">Registrar <?php 
-            if($paginaActual == 'usuarios') {
-                echo 'Usuario';
-            } else if($paginaActual == 'medicos') {
-                echo 'Médico';
-            } else if($paginaActual == 'pacientes') {
-                echo 'Paciente';
-            } else {
-                echo 'Usuario';
-            }
-            ?></button>
+            <div class="botones">
+                <button type="submit" class="estilobotones">Registrar <?php
+                                                                        if ($paginaActual == 'usuarios') {
+                                                                            echo 'Usuario';
+                                                                        } else if ($paginaActual == 'medicos') {
+                                                                            echo 'Médico';
+                                                                        } else if ($paginaActual == 'pacientes') {
+                                                                            echo 'Paciente';
+                                                                        } else {
+                                                                            echo 'Usuario';
+                                                                        }
+                                                                        ?></button>
+                <button type="button" onclick="limpiarFormulario()" class="estilobotones">Limpiar</button>
+            </div>
+
         </form>
         <script>
             document.addEventListener("DOMContentLoaded", function() {
@@ -304,3 +309,54 @@
         </script>
     </div>
 </div>
+<script>
+    function limpiarFormulario() {
+        fetch('php/limpiar-session.php')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const formulario = document.querySelector('form');
+                    formulario.reset();
+
+                    // Reinicia los campos a su estado inicial
+                    // Campos de Usuario
+                    document.getElementById("add-dni").value = "";
+                    document.getElementById("add-nombre").value = "";
+                    document.getElementById("add-apellido").value = "";
+                    document.getElementById("add-correo").value = "";
+                    document.getElementById("add-usuario").value = "";
+                    document.getElementById("add-password").value = "";
+                    document.getElementById("add-confirmPassword").value = "";
+                    // Campos de Medico
+                    document.getElementById("add-idespecialidad").value = "0";
+                    document.getElementById("add-licenciaMedica").value = "";
+                    document.getElementById("add-aniosExperiencia").value = "";
+                    document.getElementById("add-telefonoMedico").value = "";
+                    // Campos de Paciente
+                    document.getElementById("add-fechaNacimiento").value = "";
+                    document.getElementById("add-sexo").value = "";
+                    document.getElementById("add-telefono").value = "";
+                    document.getElementById("add-direccion").value = "";
+                    // Campos de Tutor
+                    document.getElementById("add-nombreTutor").value = "";
+                    document.getElementById("add-dniTutor").value = "";
+                    document.getElementById("add-telefono").value = "";
+                    document.getElementById("add-idTutor").value = "";
+
+                    document.querySelector(".form-doctor").style.display = "none";
+                    document.querySelector(".form-paciente").style.display = "none";
+
+                    // También actualiza los select manualmente si tienen opciones marcadas
+                    document.getElementById("add-tipoUsuario").value = "";
+                    document.getElementById("es-nino").value = "no";
+
+                    // Reinicia los campos dependientes
+                    document.getElementById("camposUsuario").style.display = "contents";
+                    document.getElementById("camposTutor").style.display = "none";
+                    document.getElementById("rol-tipoUsuario").value = "";
+                    //location.reload(); // dentro del if(data.success)
+                    document.getElementById("modalAgregarUsuario").style.display = "block";
+                }
+            });
+    }
+</script>

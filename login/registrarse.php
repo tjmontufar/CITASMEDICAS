@@ -1,6 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
-<?php session_start(); ?>
+<?php 
+session_start(); 
+
+if (isset($_GET['limpiar'])) {
+    unset($_SESSION['form_data']);
+    header('Location: registrarse.php');
+    exit();
+}
+
+?>
 
 <head>
     <meta charset="UTF-8">
@@ -15,6 +24,33 @@
         .form-paciente {
             display: none;
             margin-top: 15px;
+        }
+
+        form a {
+            text-decoration: none;
+            text-align: center;
+        }
+
+        form .botones {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        form .estilobotones {
+            width: 100%;
+            padding: 10px;
+            font-size: 18px;
+            color: #fff;
+            background-color: #16a8e2;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 20px;
+            margin-left: 5px;
+        }
+
+        form .estilobotones:hover {
+            background-color: #0d81c1;
         }
     </style>
 </head>
@@ -96,8 +132,11 @@
             <label for="direccion">Dirección (opcional)</label>
             <input id="direccion" type="text" name="direccion" autocomplete="off" value="<?php echo isset($_SESSION['form_data']['direccion']) ? $_SESSION['form_data']['direccion'] : ''; ?>">
         </div>
+        <div class="botones">
+            <button type="submit" class="estilobotones">Registrarse</button>
+            <a href="registrarse.php?limpiar=1" class="estilobotones" class="estilobotones">Limpiar</a>
+        </div>
 
-        <button type="submit">Registrarse</button>
         <a href="login.php" class="link">Volver a iniciar sesión</a>
     </form>
     <script>

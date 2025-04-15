@@ -12,7 +12,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
     
     try {
-        $consulta = "DELETE FROM HorariosMedicos WHERE idHorario = ?";
+        $consulta = "DELETE FROM HorariosMedicos WHERE idHorario = ? AND idMedico IN (SELECT idMedico FROM Medicos WHERE idUsuario = ?)";
         $statement = $conn->prepare($consulta);
         $statement->execute([$idhorario]);
 

@@ -49,10 +49,18 @@
                 <input type="text" name="diaSemana" id="add-diaSemana" autocomplete="off" required readonly="true">
 
                 <label for="add-horainicio">Hora Inicio</label>
-                <input id="add-horainicio" type="time" name="horainicio" autocomplete="off" required>
+                <select id="add-horainicio" name="horainicio">
+                    <option value="" selected>Seleccionar</option>
+                    <?php formatoHora(); ?>
+                </select>
+                <!-- <input id="add-horainicio" type="time" name="horainicio" autocomplete="off" required> -->
 
                 <label for="add-horafin">Hora Fin</label>
-                <input id="add-horafin" type="time" name="horafin" autocomplete="off" required>
+                <!-- <input id="add-horafin" type="time" name="horafin" autocomplete="off" required> -->
+                <select id="add-horafin" name="horafin">
+                    <option value="" selected>Seleccionar</option>
+                    <?php formatoHora(); ?>
+                </select>
 
                 <label for="add-cupos">Cupos</label>
                 <input id="add-cupos" type="text" name="cupos" autocomplete="off" required>
@@ -119,7 +127,7 @@
     document.getElementById("add-buscarmedico").addEventListener("input", function() {
         const medico = this.value;
 
-        if(!medico) {
+        if (!medico) {
             document.getElementById("add-idmedico").value = "";
             document.getElementById("add-dnimedico").value = "";
         }

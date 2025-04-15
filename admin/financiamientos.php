@@ -177,7 +177,7 @@ if (isset($_GET['export_pdf'])) {
                 </form>
             </div>
             <div class="table-container">
-                <h2>TABLA DE PAGOS POR CITA</h2>
+                <h2>LISTA DE PAGOS POR CITA</h2>
                 <div class="encabezado">
                     <a href="#" class="add-btn">Agregar Pago</a>
                     <a href="?export_pdf" class="btn-pdf">Exportar a PDF</a>

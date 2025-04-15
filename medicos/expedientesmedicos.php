@@ -236,8 +236,8 @@ if (isset($_GET['export_word'])) {
             </div>
 
             <div class="table-container">
-                <h2>Expedientes Médicos</h2>
-                <div class="export-buttons">
+                <h2>HISTORIAL DE EXPEDIENTES MÉDICOS</h2>
+                <div class="encabezado">
                     <a href="#" class="add-btn">Agregar Expediente</a>
                     <a href="?export_pdf" class="btn-pdf">Exportar a PDF</a>
                     <a href="?export_excel" class="btn-excel">Exportar a Excel</a>
@@ -284,7 +284,6 @@ if (isset($_GET['export_word'])) {
                                                 data-enfermedades='{$fila['EnfermedadesCronicas']}'
                                                 data-descripcion='{$fila['Descripcion']}'
                                                 data-fechaactualizacion='{$fila['FechaActualizacion']}'></a>
-                                            <a href='#' class='pdf-btn' data-id='{$fila['IdExpediente']}'></a>
                                             <a href='#' class='delete-btn' data-id='{$fila['IdExpediente']}'></a>
                                         </td>
                                     </tr>";
@@ -346,7 +345,6 @@ if (isset($_GET['export_word'])) {
                                 data-enfermedades="${expedientes.EnfermedadesCronicas}"
                                 data-descripcion="${expedientes.Descripcion}"
                                 data-fechaactualizacion="${expedientes.FechaActualizacion}"></a>
-                            <a href='#' class='pdf-btn' data-id="${expedientes.IdExpediente}"></a>
                             <a href="#" class="delete-btn" data-id="${expedientes.IdExpediente}"></a>
                         </td>
                     </tr>

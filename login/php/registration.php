@@ -75,12 +75,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         if ($statement->rowCount() > 0) {
             if ($tipoUsuario == 'Médico') {
-                $idUsuario = $conn->lastInsertId();
+                // Obtenemos el ID del usuario recién insertado
+                $consulta = "SELECT idUsuario FROM Usuarios WHERE usuario = ?";
+                $statement = $conn->prepare($consulta);
+                $statement->execute([$usuario]);
+                $idUsuario = $statement->fetchColumn();
+                
+                if(!$idUsuario) {
+                    $_SESSION['error'] = "Error al obtener el ID del usuario.";
+                    header('Location: ../registrarse.php');
+                    exit();
+                }
+                
                 $medico = "INSERT INTO Medicos (idUsuario, idEspecialidad, numerolicenciaMedica, anosExperiencia) VALUES (?,?,?,?)";
                 $statement = $conn->prepare($medico);
                 $statement->execute([$idUsuario, $idespecialidad, $licenciaMedica, $aniosExperiencia]);
             } else if ($tipoUsuario == 'Paciente') {
                 $idUsuario = $conn->lastInsertId();
+
+                if(!$idUsuario) {
+                    $_SESSION['error'] = "Error al obtener el ID del usuario.";
+                    header('Location: ../registrarse.php');
+                    exit();
+                }
                 $paciente = "INSERT INTO Pacientes (idUsuario, fechaNacimiento, sexo, telefono, direccion) VALUES (?,?,?,?,?)";
                 $statement = $conn->prepare($paciente);
                 $statement->execute([$idUsuario, $fechaNacimiento, $sexo, $telefono, $direccion]);
